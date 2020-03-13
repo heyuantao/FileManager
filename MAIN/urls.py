@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 import os
 
-from MAIN.views import TestLogoutView, TestLoginView
+from MAIN.views import TestLogoutView, TestLoginView, IndexView
 
 GUEST_MEDIA_ROOT = os.path.join(settings.MEDIA_ROOT, 'guest/build/')
 GUEST_MEDIA_URL = "guest/media/"
@@ -13,13 +13,7 @@ MANAGER_MEDIA_URL = "manager/media/"
 
 
 urlpatterns = [
-    #url(r'^$', IndexView.as_view(), name='index'),
-    #url(r'guest$', GuestView.as_view(), name='guest'),
-    #url(r'examinee$', ExamineeView.as_view(), name='examinee'),
-    #url(r'manager$', ManagerView.as_view(), name='manager'),
-
-    #url(r'examinee_enrollment_for_print/(?P<id>\d+)$', ExamineeEnrollmentForPrintView.as_view(), name='examinee_enrollment_for_print'),
-
+    url(r'^$', IndexView.as_view(), name='index'),
     url(r'testlogin$', TestLoginView.as_view(), name='testlogin'),
     url(r'testlogout$', TestLogoutView.as_view(), name='testlogout'),
 ] + static(MANAGER_MEDIA_URL, document_root=MANAGER_MEDIA_ROOT) \
