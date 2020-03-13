@@ -1,0 +1,6 @@
+/.idea
+/debug.log
+/__pycache__
+/MAIN/__pycache__
+/API/__pycache__
+/FileManager/__pycache__
