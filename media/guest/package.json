@@ -10,7 +10,7 @@
     "react-dom": "^16.13.0",
     "react-scripts": "3.4.0",
     "antd": "^3.12.4",
-    "axios": "^0.16.1",
+    "axios": "^0.18.1",
     "moment": "^2.18.1",
     "immutable": "^4.0.0-rc.12",
     "react-cookie": "^1.0.4",
