@@ -51,3 +51,34 @@ class IndexView(View):
     def get(self, request):
         pageContext = request.GET.dict()
         return render(request, self.template, pageContext)
+
+class IndexView(View):
+    #template = 'index.html'
+    template = "guest/build/index.html"
+    def get(self, request):
+        pageContext = request.GET.dict()
+        return render(request, self.template, pageContext)
+
+class GuestView(View):
+    #template = 'loginandregistration.html'
+    template = "guest/build/index.html"
+    def get(self, request):
+        pageContext = request.GET.dict()
+        return render(request, self.template, pageContext)
+
+class ManagerView(View):
+    #template = 'manager.html'
+    template = "manager/build/index.html"
+    def get(self, request):
+        try:
+            if request.user and request.user.is_staff:
+                pageContext = request.GET.dict()
+                return render(request, self.template, pageContext)
+            else:
+                return HttpResponseRedirect(reverse('guest'))
+        except AttributeError as e:
+            return HttpResponseRedirect(reverse('guest'))
+        except Exception as e:
+            logger.error(traceback.print_exc())
+            return HttpResponseRedirect(reverse('guest'))
+

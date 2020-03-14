@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^downloads/main/', include('MAIN.urls')),
     url(r'^downloads/api/', include('API.urls')),
     url(r'^downloads/$', RedirectView.as_view(url="/downloads/main/")),
+    url(r'^$', RedirectView.as_view(url="/downloads/main/")),
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
