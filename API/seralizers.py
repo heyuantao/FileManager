@@ -20,7 +20,7 @@ class UserSerializer(serializers.Serializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['id'] = instance.id
-        ret['is_superuser'] = instance.is_superuser
+        ret['is_superuser'] = instance.is_staff
         if instance.last_login:
             ret['last_login'] = instance.last_login.date()
         else:

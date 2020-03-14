@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 class ManagerFileListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = FileSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAdminUser,)
     pagination_class = CustomItemPagination
 
     def get_queryset(self):
@@ -82,9 +82,6 @@ class ManagerFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIVi
     def get_queryset(self):
         try:
             return FileModel.objects.all()
-        except MessageException as e:
-            logger.error(traceback.format_exc())
-            raise e  # rethrow exception
         except Exception as e:
             logger.error(traceback.format_exc())
             raise MessageException('出现未知错误 !')
