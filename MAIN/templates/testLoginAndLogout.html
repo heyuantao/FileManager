@@ -17,6 +17,6 @@
             {%csrf_token%}
             <input type="submit">
         </form>
-        <a href="/main/testlogout">注销</a>
+        <a href={% url 'testlogout' %}>注销</a>
     </body>
 </html>

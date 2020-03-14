@@ -4,6 +4,7 @@ from django.views.generic.base import View
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
+from django.core.urlresolvers import reverse
 #from django.template.context import RequestContext
 from rest_framework.views import APIView
 from rest_framework import generics
@@ -42,7 +43,7 @@ class TestLogoutView(View):
     def get(self,request):
         logout(request)
         pageContext = request.GET.dict()
-        return HttpResponseRedirect("/main/testlogin")
+        return HttpResponseRedirect(reverse("testlogin"))
 
 class IndexView(View):
     #template = 'index.html'
