@@ -3,6 +3,9 @@ from enum import Enum
 from datetime import datetime,timedelta
 import requests
 import json
+import urllib
+import string
+import os
 import traceback
 import logging
 
@@ -179,9 +182,21 @@ class WebStorageClient:
         download_url = "{0}{1}?key={2}&realname={3}&timestamp={4}&sign={5}".format(site_url, api_url, key, realname,timestamp, sign)
         return download_url
 
-    #下载文件
-    def download(self,key,dir="./"):
-        pass
+    #下载文件,将文件下载到指定目录，返回值是元组(link_url,执行状态)
+    def download_to_dir(self,key, dir="/tmp/"):
+        try:
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+            expire = datetime.now() + timedelta(minutes=30)
+            link = self.get_download_url(key, expire=expire)
+            target = os.path.join(dir,key)
+            safe_media_url = urllib.parse.quote(link, safe=string.printable)
+            urllib.request.urlretrieve(safe_media_url, target)
+            return (safe_media_url, WebStorageClientStatus.SUCCESS)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            status = WebStorageClientStatus.OTHER_ERROR
+            return ("", WebStorageClientStatus.OTHER_ERROR)
 
 def test_case1():
     client = WebStorageClient(token='UseMyWebStorageService',endpoint='http://webstorage.heyuantao.cn')
@@ -205,9 +220,17 @@ def test_case2():
     #生成一个在一定时间内有效的链接
     #expire= datetime.now() + timedelta(minutes=1)
     #link = client.get_download_url('YcSXe_千与千寻.mp4',realname='千与千寻.mp4',expire=expire)
-    link = client.get_download_url('YcSXe_千与千寻.mp4', realname='千与千寻.mp4', expire=expire)
+    link = client.get_download_url('YcSXe_千与千寻.mp4', realname='千与千寻.mp4')
     print(link)
+
+def test_case3():
+    client = WebStorageClient(token='UseMyWebStorageService',endpoint='http://webstorage.heyuantao.cn')
+    r, s = client.list()
+    print('VALUE: {}\nSTATUS: {}'.format(r, s))
+    r, s =client.download_to_dir('bB2PK_node-v12.16.1-x64.msi', dir='./tmp/')
+    print('VALUE: {}\nSTATUS: {}'.format(r, s))
 
 if __name__=="__main__":
     #test_case1()
-    test_case2()
+    #test_case2()
+    test_case3()
