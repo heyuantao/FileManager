@@ -13,13 +13,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.contrib.auth import update_session_auth_hash
 from datetime import datetime
-#from MAIN.serializers import UserSerializer
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 
-from API.guest_seralizers import UserSerializer
+from API.seralizers import UserSerializer
 from MAIN.paginations import CustomItemPagination
 from MAIN.exceptions import MessageException
 from django.conf import settings
@@ -62,7 +61,7 @@ class LogoutAPIView(APIView):
             return response
         except Exception as e:
             logger.error(traceback.print_exc())
-            return Response({"error_message": u"程序发生异常"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error_message": u"error in software"}, status=status.HTTP_400_BAD_REQUEST)
         #return Response({"errormessage": u"该接口未启用"}, status=400)
 
 
@@ -80,7 +79,7 @@ class UserAPIView(APIView):  #This class handle user information retrive and upd
 
 
     def put(self, request, format=None):
-        return Response({"error_message": u"该接口未启用"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return Response({"error_message": u"method not allow"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         '''
         user_instance = request.user
         if user_instance.is_authenticated():

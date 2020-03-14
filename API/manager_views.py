@@ -25,7 +25,7 @@ import moment
 import pandas
 import random
 import logging
-from API.guest_seralizers import FileSerializer
+from API.manager_seralizers import ManagerFileSerializer
 from MAIN.exceptions import MessageException
 from MAIN.models import FileModel
 from MAIN.paginations import CustomItemPagination
@@ -33,7 +33,7 @@ from MAIN.paginations import CustomItemPagination
 logger = logging.getLogger(__name__)
 
 class ManagerFileListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = FileSerializer
+    serializer_class = ManagerFileSerializer
     permission_classes = (IsAdminUser,)
     pagination_class = CustomItemPagination
 
@@ -76,8 +76,8 @@ class ManagerFileListCreateAPIView(generics.ListCreateAPIView):
 
 
 class ManagerFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = FileSerializer
-    permission_classes = (AllowAny,)
+    serializer_class = ManagerFileSerializer
+    permission_classes = (IsAdminUser,)
 
     def get_queryset(self):
         try:

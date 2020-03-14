@@ -21,17 +21,15 @@ class LargeFileStorage:
         return r
 
     def delete(self,key):
-        r, s = self.client.delete(key)
+        s = self.client.delete(key)
         if s != WebStorageClientStatus.SUCCESS:
             raise MessageException('Error in delete file list in LargeFileStorage.delete() ')
 
     def get_download_url(self,key, realname=None, expire=datetime.now()+timedelta(minutes=120)):
         if realname == None:
             realname = key
-        r,s = self.client.get_download_url(key,realname,expire)
-        if s!= WebStorageClientStatus.SUCCESS:
-            raise MessageException('Error in delete file list in LargeFileStorage.get_download_url() ')
-        return r
+        link = self.client.get_download_url(key,realname,expire)
+        return link
 
     def create_upload_task(self, key, size_limit=-1):
         r,s =self.client.create_upload_task(key,size_limit=size_limit)

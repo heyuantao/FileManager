@@ -14,7 +14,7 @@ from MAIN.storage_client import LargeFileStorageInstance
 logger = logging.getLogger(__name__)
 
 
-class FileSerializer(serializers.Serializer):
+class GuestFileSerializer(serializers.Serializer):
     filename = serializers.CharField(max_length=300)
     filesize = serializers.IntegerField(default=0)
     key = serializers.CharField(max_length=300)
@@ -45,7 +45,6 @@ class FileSerializer(serializers.Serializer):
         instance.browserable = validated_data.get('browserable', instance.browserable)
         instance.save()
         return instance
-
 
 
     def validate(self, data):

@@ -14,7 +14,7 @@ from MAIN.storage_client import LargeFileStorageInstance
 logger = logging.getLogger(__name__)
 
 
-class FileSerializer(serializers.Serializer):
+class ManagerFileSerializer(serializers.Serializer):
     filename = serializers.CharField(max_length=300)
     filesize = serializers.IntegerField(default=0)
     key = serializers.CharField(max_length=300)
@@ -25,7 +25,8 @@ class FileSerializer(serializers.Serializer):
         ret = super().to_representation(instance)
         ret['id'] = instance.id
         key = ret['key']
-        ret['url'] = LargeFileStorageInstance.get_download_url(key)
+        filename = ret['filename']
+        ret['url'] = LargeFileStorageInstance.get_download_url(key, realname=filename)
         return ret
 
     def create(self, validated_data):
