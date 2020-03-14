@@ -64,7 +64,7 @@ class WebStorageClientStatus(Enum):
 
 
 class WebStorageClient:
-    def __init__(self, token="", endpoint=None):
+    def __init__(self, endpoint=None, token=""):
         self.token = token
         self.endpoint = endpoint
         self.list_file_api      = FILE_LIST_API

@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime,timedelta
 from MAIN.exceptions import MessageException
+from MAIN.utils import Singleton
+from django.conf import settings
 from .web_storage_client import WebStorageClient,WebStorageClientStatus
 
+HOST = settings.LARGE_STORAGE_SETTINGS.get('SITE_URL')
+TOKEN = settings.LARGE_STORAGE_SETTINGS.get('SITE_TOKEN')
+
+@Singleton
 class LargeFileStorage:
     def __init__(self):
-        self.client = WebStorageClient(token='UseMyWebStorageService',endpoint='http://webstorage.heyuantao.cn')
+        self.client = WebStorageClient(endpoint=HOST,token=TOKEN)
 
     def list(self):
         r,s = self.client.list()

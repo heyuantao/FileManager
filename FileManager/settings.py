@@ -172,3 +172,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
 
+#WebStorageSettings
+LARGE_STORAGE_SETTINGS={
+    'SITE_URL' : 'http://webstorage.heyuantao.cn',
+    'SITE_TOKEN': 'UseMyWebStorageService',
+}

@@ -7,8 +7,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 import traceback
 import logging
-
-from MAIN.web_storage_client import WebStorageClient,WebStorageClientStatus
+from MAIN.storage_client import LargeFileStorageInstance
 
 logger = logging.getLogger(__name__)
 
@@ -43,5 +42,7 @@ class FileSerializer(serializers.Serializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['id'] = instance.id
-        ret['url'] = 'this is generate url'
+        key = ret['key']
+        ret['url'] = LargeFileStorageInstance.get_download_url(key)
         return ret
+
