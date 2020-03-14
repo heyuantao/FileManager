@@ -32,7 +32,7 @@ from MAIN.paginations import CustomItemPagination
 
 logger = logging.getLogger(__name__)
 
-class GuestFileListCreateAPIView(generics.ListCreateAPIView):
+class ManagerFileListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = FileSerializer
     permission_classes = (AllowAny,)
     pagination_class = CustomItemPagination
@@ -75,7 +75,7 @@ class GuestFileListCreateAPIView(generics.ListCreateAPIView):
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GuestFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIView):
+class ManagerFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = FileSerializer
     permission_classes = (AllowAny,)
 
@@ -96,15 +96,45 @@ class GuestFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIView
             seralizer = seralizer_class(instance)
             return Response(seralizer.data, status=status.HTTP_200_OK)
         except FileModel.DoesNotExist as e:
-            return Response({'error_message': '该实例不存在 !'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error_message': 'instance not found'}, status=status.HTTP_400_BAD_REQUEST)
         except MessageException as e:
             return Response({'error_message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error(traceback.print_exc())
-            return Response({'error_message': '软件错误'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error_message': 'error in software'}, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, id):
-        return Response({'error_message': '不支持'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        try:
+            category_instance = self.get_queryset().get(id=id)
+            seralizer_class = self.get_serializer_class()
+
+            seralizer = seralizer_class(instance=category_instance, data=request.data)
+            if not seralizer.is_valid(raise_exception=True):
+                raise MessageException('data save error')
+            instance = seralizer.save()
+            return Response(seralizer_class(instance).data, status=status.HTTP_200_OK)
+        except FileModel.DoesNotExist:
+            return Response({'error_message': 'instance not find'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as e:
+            logger.error(traceback.print_exc())
+            first_validate_error_message = list(e.detail.values())[0][0]
+            return Response({'error_message': first_validate_error_message}, status=status.HTTP_400_BAD_REQUEST)
+        except MessageException as e:
+            return Response({'error_message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(traceback.print_exc())
+            return Response({'error_message': 'error in software'}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request,id):
-        return Response({'error_message': '不支持'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        try:
+            category_instance = self.get_queryset().get(id=id)
+            category_instance.delete()
+            return Response({}, status=status.HTTP_200_OK)
+        except FileModel.DoesNotExist:
+            return Response({'error_message': 'instance not find'}, status=status.HTTP_400_BAD_REQUEST)
+        except MessageException as e:
+            return Response({'error_message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(traceback.print_exc())
+            return Response({'error_message': 'error in software'}, status=status.HTTP_400_BAD_REQUEST)
+

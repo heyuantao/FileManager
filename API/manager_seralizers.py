@@ -46,8 +46,6 @@ class FileSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-
-
     def validate(self, data):
         return data
 
