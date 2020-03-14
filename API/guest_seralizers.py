@@ -53,6 +53,21 @@ class FileSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+    def update(self, instance, validated_data):
+        instance.filename = validated_data.get('filename', instance.filename)
+        instance.filesize = validated_data.get('filesize', instance.filesize)
+        old_key = instance.key
+        new_key = validated_data.get('key')
+        if old_key != new_key:
+            LargeFileStorageInstance.delete(old_key)
+            instance.key = new_key
+        instance.uploaddate = datetime.now()
+        instance.browserable = validated_data.get('browserable', instance.browserable)
+        instance.save()
+        return instance
+
+
+
     def validate(self, data):
         return data
 
