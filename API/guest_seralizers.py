@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 import traceback
 import logging
+
+from MAIN.models import FileModel
 from MAIN.storage_client import LargeFileStorageInstance
 
 logger = logging.getLogger(__name__)
@@ -45,4 +47,12 @@ class FileSerializer(serializers.Serializer):
         key = ret['key']
         ret['url'] = LargeFileStorageInstance.get_download_url(key)
         return ret
+
+    def create(self, validated_data):
+        instance = FileModel(**validated_data)
+        instance.save()
+        return instance
+
+    def validate(self, data):
+        return data
 
