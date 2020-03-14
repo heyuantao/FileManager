@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from enum import Enum
+from datetime import datetime,timedelta
 import requests
 import json
 import traceback
@@ -12,6 +13,42 @@ FILE_DELETE_API = '/api/file/delete/'
 FILE_INRO_API   = '/api/file/info/'
 FILE_URL_API    = '/api/file/url/'
 FILE_TASK_API  = '/api/upload/token/'
+
+import hashlib
+from collections import Iterable
+
+#所有的参数都为字符串
+class DownloadKeyCrypto:
+    def __init__(self):
+        pass
+
+    #secret为预共享密钥,为一个单独的密钥
+    def sign(self,key,realname,timestamp,secret):
+        combined_str = key + realname + timestamp + secret
+        combined_byte = combined_str.encode('utf-8')
+        combined_hash =hashlib.md5(combined_byte).hexdigest()
+        return combined_hash
+
+    # secret为预共享密钥,可能是一个密钥也可以是一个密钥列表
+    def valid(self,key,realname,timestamp,secret_or_secret_list,sign):
+        if isinstance(secret_or_secret_list, list):
+            for one_secret in secret_or_secret_list:
+                combined_str = key + realname + timestamp + one_secret
+                combined_byte = combined_str.encode('utf-8')
+                combined_hash = hashlib.md5(combined_byte).hexdigest()
+                if combined_hash ==sign:
+                    return True
+            return False
+        else:
+            combined_str = key + realname + timestamp + secret_or_secret_list
+            combined_byte = combined_str.encode('utf-8')
+            combined_hash = hashlib.md5(combined_byte).hexdigest()
+            if combined_hash == sign:
+                return True
+            else:
+                return False
+
+downloadkeycrpyto = DownloadKeyCrypto()
 
 class WebStorageClientStatus(Enum):
     SUCCESS         = 1
@@ -59,7 +96,7 @@ class WebStorageClient:
             logger.error(traceback.format_exc())
             return ({}, WebStorageClientStatus.OTHER_ERROR)
 
-    #查看文件是否存在
+    #查看文件是否存在,返回值为元组(文件是否存在,执行状态)
     def exist(self, key):
         try:
             url = self.endpoint + self.info_file_api
@@ -68,11 +105,13 @@ class WebStorageClient:
 
             if status_code == 200:
                 status = WebStorageClientStatus.SUCCESS
-                return (True, status)
+                exist = return_object['exist']
+                if exist == True:
+                    return (True, status)
+                else:
+                    return (False, status)
             else:
-                if status_code == 400:
-                    status = WebStorageClientStatus.KEY_NOTEXIST
-                elif status_code == 401:
+                if status_code == 401:
                     status = WebStorageClientStatus.UNAUTHORIZED
                 else:
                     status = WebStorageClientStatus.NETWORK_ERROR
@@ -83,7 +122,7 @@ class WebStorageClient:
             return (False, status)
 
 
-    #删除某个文件，返回状态值
+    #删除某个文件，返回该命令的执行结果
     def delete(self, key):
         try:
             url = self.endpoint + self.delete_file_api
@@ -105,7 +144,7 @@ class WebStorageClient:
             return WebStorageClientStatus.OTHER_ERROR
 
     #返回执行的返回值{'task':'xxx','key':'sdfsdfd','size':xx}（以对象返回)和状态值
-    def create_upload_task(self,key,size_limit=-1):
+    def create_upload_task(self, key, size_limit=-1):
         try:
             url = self.endpoint+ self.file_task_api
             data = {'key': key, 'size': size_limit}
@@ -127,14 +166,44 @@ class WebStorageClient:
             return ({}, WebStorageClientStatus.OTHER_ERROR)
 
 
+    #生成文件下载链接
+    def get_download_url(self, key, realname=None, expire=datetime.now()+timedelta(minutes=120)):
+        if realname == None:
+            realname = key
+        timestamp = str((datetime.now() + timedelta(minutes=120)).timestamp())
+        secret = self.token
+        sign = downloadkeycrpyto.sign(key, realname, timestamp, secret)
+        site_url = self.endpoint
+        api_url = "/file/content"
+        download_url = "{0}{1}?key={2}&realname={3}&timestamp={4}&sign={5}".format(site_url, api_url, key, realname,timestamp, sign)
+        return download_url
 
-def test():
+    #下载文件
+    def download(self,key,dir="./"):
+        pass
+
+def test_case1():
     client = WebStorageClient(token='UseMyWebStorageService',endpoint='http://webstorage.heyuantao.cn')
-    #l, s = client.list_key()
-    #l,s=client.delete_key('Sys4p_00_OpenStack基础-注意这里面的视频没加密.zip')
-    l,s = client.create_upload_task('obc1.txt')
-    print(l)
-    print(s)
+
+    r, s = client.list()
+    print('VALUE: {}\nSTATUS: {}'.format(r,s))
+    r, s = client.exist('bIOmQ_04_OpenStack HA 理论.zip')
+    print('VALUE: {}\nSTATUS: {}'.format(r, s))
+    r, s = client.exist('bIOmQ_04_OpenStack HA  理论.zip')
+    print('VALUE: {}\nSTATUS: {}'.format(r, s))
+
+    s = client.delete('bIOmQ_04_OpenStack HA 理论.zip')
+    print('STATUS: {}'.format(s))
+
+    r, s = client.create_upload_task('bIOmQ_04_OpenStack HA  理论.zip')
+    print('VALUE: {}\nSTATUS: {}'.format(r, s))
+
+
+def test_case2():
+    client = WebStorageClient(token='UseMyWebStorageService',endpoint='http://webstorage.heyuantao.cn')
+    link = client.get_download_url('YcSXe_千与千寻.mp4')
+    print(link)
 
 if __name__=="__main__":
-    test()
+    #test_case1()
+    test_case2()
