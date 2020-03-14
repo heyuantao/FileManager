@@ -31,3 +31,15 @@ class UserSerializer(serializers.Serializer):
         return ret
 
 
+class FileSerializer(serializers.Serializer):
+    filename = serializers.CharField(max_length=300)
+    filesize = serializers.IntegerField(default=0)
+    key = serializers.CharField(max_length=300)
+    uploaddate = serializers.DateTimeField(read_only=True)
+    browserable = serializers.BooleanField(default=True)
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['id'] = instance.id
+        ret['url'] = 'this is generate url'
+        return ret
