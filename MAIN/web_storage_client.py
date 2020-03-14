@@ -170,7 +170,8 @@ class WebStorageClient:
     def get_download_url(self, key, realname=None, expire=datetime.now()+timedelta(minutes=120)):
         if realname == None:
             realname = key
-        timestamp = str((datetime.now() + timedelta(minutes=120)).timestamp())
+        #timestamp = str((datetime.now() + timedelta(minutes=120)).timestamp())
+        timestamp = str(expire.timestamp())
         secret = self.token
         sign = downloadkeycrpyto.sign(key, realname, timestamp, secret)
         site_url = self.endpoint
@@ -201,7 +202,10 @@ def test_case1():
 
 def test_case2():
     client = WebStorageClient(token='UseMyWebStorageService',endpoint='http://webstorage.heyuantao.cn')
-    link = client.get_download_url('YcSXe_千与千寻.mp4')
+    #生成一个在一定时间内有效的链接
+    #expire= datetime.now() + timedelta(minutes=1)
+    #link = client.get_download_url('YcSXe_千与千寻.mp4',realname='千与千寻.mp4',expire=expire)
+    link = client.get_download_url('YcSXe_千与千寻.mp4', realname='千与千寻.mp4', expire=expire)
     print(link)
 
 if __name__=="__main__":
