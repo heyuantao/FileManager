@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#该文件为WebStorage的客户端接口
 from enum import Enum
 from datetime import datetime,timedelta
 import requests
@@ -197,6 +198,8 @@ class WebStorageClient:
             logger.error(traceback.format_exc())
             status = WebStorageClientStatus.OTHER_ERROR
             return ("", WebStorageClientStatus.OTHER_ERROR)
+
+
 
 def test_case1():
     client = WebStorageClient(token='UseMyWebStorageService',endpoint='http://webstorage.heyuantao.cn')
