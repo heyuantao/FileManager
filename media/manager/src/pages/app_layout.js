@@ -2,6 +2,7 @@ import React from "react";
 import {Router,Route,hashHistory,IndexRedirect} from "react-router";
 import App from "./app";
 import FileManagePage from "./filemanage_page";
+import PasswordResetPage from "./passwordreset_page";
 
 export default class AppLayout extends React.Component{
     handleOnEnter(){
@@ -16,9 +17,8 @@ export default class AppLayout extends React.Component{
                     <Route path="/userenrollment" component={EnrollmentPage} onEnter={this.handleOnEnter}></Route>
                     */}
                     <Route path="/filemanage" component={FileManagePage} onEnter={this.handleOnEnter}></Route>
-
+                    <Route path="/resetpassword" component={PasswordResetPage} onEnter={this.handleOnEnter}></Route>
                     {/*
-                    <Route path="/account" component={AccountPage} onEnter={this.handleOnEnter}></Route>
                     <Route path="/personal" component={PersonalPage} onEnter={this.handleOnEnter}></Route>
                     */}
                 </Route>

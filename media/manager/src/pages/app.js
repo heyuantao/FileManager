@@ -1,6 +1,7 @@
 import React from "react";
 import { Layout } from "antd";
 import AppSideBar from "./componments/app_sidebar";
+import AppLocationIndicator from "./componments/app_location_indicator";
 import AppPageHeader from "./componments/app_page_header";
 import AppPageFooter from "./componments/app_page_footer";
 
@@ -18,6 +19,7 @@ class App extends React.Component{
                     <AppSideBar></AppSideBar>
                     <Layout>
                         <AppPageHeader></AppPageHeader>
+                        <AppLocationIndicator></AppLocationIndicator>
                         <Content style={{ margin: "0 10px" }}>
                             {this.props.children}
                         </Content>
