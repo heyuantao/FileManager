@@ -40,7 +40,8 @@ req.interceptors.response.use(
 export default{
     request:req,
     autoLogin:false,
-    userAPIURL:"/api/v1/user/",
-    loginAPIURL:"/api/v1/login/",
-    logoutAPIURL:"/api/v1/logout/",
+    userAPIURL:"/downloads/api/v1/user/",
+    loginAPIURL:"/downloads/api/v1/login/",
+    logoutAPIURL:"/downloads/api/v1/logout/",
+    filelistAPIURL:"/downloads/api/v1/guest/file/list/",
 }

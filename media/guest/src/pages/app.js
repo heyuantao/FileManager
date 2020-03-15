@@ -1,5 +1,8 @@
 import React from "react";
 import {fromJS } from "immutable";
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 export default class App extends React.Component{
     constructor(props) {

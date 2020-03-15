@@ -3,7 +3,7 @@ import { Col, Row, Layout, Menu } from "antd";
 import { Link } from "react-router";
 import { connect } from "react-redux";
 import { fromJS } from "immutable";
-
+import "./app_page_header.css";
 //import "./index.css";
 //import * as NavActionCreator from "./store/NavActionCreator";
 
@@ -30,7 +30,7 @@ class AppPageHeader extends React.Component {
                 <Row type="flex" justify="space-between" align="middle">
                     <Col>
                         <div className="HeadLogo">
-                            数据分享
+                            文件浏览
                         </div>
                     </Col>
                     <Col span={15} style={{float: "right"}}>
@@ -38,25 +38,14 @@ class AppPageHeader extends React.Component {
                                style={{lineHeight:"64px"}}>
                             { (isLogin===false)&&
                                 <Menu.Item key="login" style={{float: "right"}}>
-                                    <Link to="/login">登录/注册</Link>
+                                    <Link to="/login">登录</Link>
                                 </Menu.Item>
                             }
-                            { ((isLogin===true)&&(user.get("is_superuser")===true))&&
+                            { (isLogin===true)&&
                                 <Menu.Item key="login" style={{float: "right"}}>
-                                    <a onClick={()=>{this.handleGoToUserDashboard()}}>管理考生({user.get("username")}已登录)</a>
+                                    <a onClick={()=>{this.handleGoToUserDashboard()}}>管理文件({user.get("username")}已登录)</a>
                                 </Menu.Item>
                             }
-                            { ((isLogin===true)&&(user.get("is_superuser")===false))&&
-                                <Menu.Item key="login" style={{float: "right"}}>
-                                    <a onClick={()=>{this.handleGoToUserDashboard()}}>开始报名({user.get("username")}已登录)</a>
-                                </Menu.Item>
-                            }
-                            <Menu.Item key="query" style={{float: "right"}}>
-                                <Link to="/query">结果查询</Link>
-                            </Menu.Item>
-                            <Menu.Item key="help" style={{float: "right"}}>
-                                <Link to="/help">使用帮助</Link>
-                            </Menu.Item>
                         </Menu>
                     </Col>
                 </Row>
