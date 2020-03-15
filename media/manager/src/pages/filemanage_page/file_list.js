@@ -140,7 +140,7 @@ class FileList extends React.Component {
                             <Form.Item style={{float:"right"}}>
                                 <Button onClick={()=>{this.handleSearchSubmit()}} type="primary" style={{marginRight:"10px"}}>查找</Button>
                                 <Button onClick={()=>{this.handleSearchClear()}} type="default" style={{marginRight:"10px"}}>清空</Button>
-                                <Button onClick={()=>{this.setState({uploadModalVisible:true})}} type="default">文件上传</Button>
+                                <Button onClick={()=>{this.props.close()}} type="default">文件上传</Button>
                             </Form.Item>
                         </Form>
                     </Col>
@@ -156,7 +156,9 @@ class FileList extends React.Component {
 
                 <LinkModal visible={this.state.linkModalVisible} instanceid={this.state.linkModalInstanceId}
                     onOK={()=>{this.handleLinkModalClose()}}></LinkModal>
+                {/*
                 <UploadModal visible={this.state.uploadModalVisible} onOK={()=>{this.handleUploadModalClose()}}></UploadModal>
+                */}
             </div>
 
         )

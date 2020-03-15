@@ -137,12 +137,13 @@ class ReactUploader extends React.Component{
                 <Upload {...uploadButtonprops} >
                     <Button>
                         {/*<UploadOutlined /> Select File*/}
-                        Select File
+                        选择文件
                     </Button>
                 </Upload>
                 <span style={{marginRight:"10px"}}></span>
+                <div></div>
                 <Button type="primary" onClick={this.handleUploadClick} disabled={mediaFileList.length === 0} loading={mediaUploading} style={{ marginTop: 16 }} >
-                        {mediaUploading ? 'Uploading: '+mediaPercent+"%" : 'Start Upload'}
+                        {mediaUploading ? '上传中: '+mediaPercent+"%" : '开始上传'}
                 </Button>
             </div>
         );
