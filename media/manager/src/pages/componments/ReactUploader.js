@@ -5,7 +5,7 @@ import axios from 'axios';
 import WebUploader from 'webuploader';
 
 const req = Settings.request;
-const fileAPIURL = Settings.fileAPIURL;
+const uploadTaskAPIURL = Settings.uploadTaskAPIURL;
 //import { UploadOutlined } from '@ant-design/icons';
 
 class ReactUploader extends React.Component{
@@ -53,10 +53,12 @@ class ReactUploader extends React.Component{
     }
 
     handleUploadProcess =(task,key,file)=>{
+        const clip_upload_url = "http://webstorage.heyuantao.cn/api/upload/";
+        const clip_upload_success_url = "http://webstorage.heyuantao.cn/api/upload/success/";
         const _this=this;
         const uploader = WebUploader.create({
             //swf: 'https://cdn.bootcss.com/webuploader/0.1.1/Uploader.swf', //swf位置，这个可能与flash有关
-            server: '/api/upload/',                        //接收每一个分片的服务器地址
+            server: clip_upload_url,                        //接收每一个分片的服务器地址
             chunked: true, chunkSize: 5 * 1024 * 1024, chunkRetry: 3, threads: 3, duplicate: true,
             formData: {task:task,key:key},
         });
@@ -72,7 +74,7 @@ class ReactUploader extends React.Component{
 
         uploader.on('uploadSuccess', function(file) { //整个文件的所有分片都上传成功，调用该方法 上传的信息（文件唯一标识符，文件后缀名）
             const data = {'task': task, 'key':key,'ext': file.source['ext'], 'type': file.source['type']};
-            axios.post('/api/upload/success/',data).then((res)=>{
+            axios.post(clip_upload_success_url,data).then((res)=>{
                 console.log('Upload success finished !')
                 _this.uploadSuccessFinished();
             }).catch((err)=>{
@@ -106,8 +108,7 @@ class ReactUploader extends React.Component{
         //    return;
         //}
         this.setState({mediaUploading:true});
-        //{'key':new_file_name,'size':1024*1024*10}
-        axios.post("/api/upload/token/",{'key':new_file_name},{headers: {'Authorization': 'Token '+token}}
+        axios.post(uploadTaskAPIURL,{'key':new_file_name},{headers: {'Authorization': 'Token '+token}}
         ).then((res)=>{
             console.log(res.data);
             const task = res.data.task;

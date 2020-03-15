@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 
 from API.guest_views import GuestFileListAPIView, GuestFileRetriveAPIView
-from API.manager_views import ManagerFileListCreateAPIView, ManagerFileRetriveUpdateDestoryAPIView
+from API.manager_views import ManagerFileListCreateAPIView, ManagerFileRetriveUpdateDestoryAPIView, \
+    ManagerFileUploadTaskAPIView
 from API.views import LoginAPIView, LogoutAPIView, UserAPIView
 
 urlpatterns = [
@@ -19,6 +20,7 @@ urlpatterns = [
     url(r'^v1/guest/file/', GuestFileListAPIView.as_view()),
 
     #manager api
+    url(r'^v1/manager/file/task/$', ManagerFileUploadTaskAPIView.as_view()),
     url(r'^v1/manager/file/(?P<id>\d+)/$', ManagerFileRetriveUpdateDestoryAPIView.as_view()),
     url(r'^v1/manager/file/', ManagerFileListCreateAPIView.as_view()),
 ]

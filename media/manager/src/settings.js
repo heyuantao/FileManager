@@ -44,4 +44,5 @@ export default{
     loginAPIURL:"/downloads/api/v1/login/",
     logoutAPIURL:"/downloads/api/v1/logout/",
     fileAPIURL:"/downloads/api/v1/manager/file/",
+    uploadTaskAPIURL:"/downloads/api/v1/manager/file/task/",
 }

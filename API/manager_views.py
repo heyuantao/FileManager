@@ -20,10 +20,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
 from datetime import datetime
 from django.utils.decorators import method_decorator
+from MAIN.storage_client import LargeFileStorageInstance
 import traceback
 import json
 import moment
 import pandas
+import json
 import random
 import logging
 from API.manager_seralizers import ManagerFileSerializer
@@ -138,3 +140,18 @@ class ManagerFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIVi
             logger.error(traceback.print_exc())
             return Response({'error_message': 'error in software'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ManagerFileUploadTaskAPIView(APIView):
+    def get(self,request):
+        return Response({'error_message': 'method not allow'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def post(self,request):
+        try:
+            key = request.data.get('key')
+            taskInstance = LargeFileStorageInstance.create_upload_task(key,size_limit=-1)
+            return Response(json.dumps(taskInstance), status=status.HTTP_200_OK)
+        except MessageException:
+            logger.error(traceback.print_exc())
+            return Response({'error_message': 'webstorage api error'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(traceback.print_exc())
+            return Response({'error_message': 'error in software'}, status=status.HTTP_400_BAD_REQUEST)
