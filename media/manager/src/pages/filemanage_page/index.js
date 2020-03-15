@@ -1,4 +1,6 @@
 import React from "react";
+import {Col, Row, Button} from "antd";
+import FileList from "./file_list";
 
 class FileManagePage extends React.Component{
     constructor(props) {
@@ -8,7 +10,9 @@ class FileManagePage extends React.Component{
     render() {
         return (
             <div style={{ padding: 24, background: "#fff"}}>
-                <h1>FileManagePaeg</h1>
+                <Row>
+                    <FileList></FileList>
+                </Row>
             </div>
         )
     }

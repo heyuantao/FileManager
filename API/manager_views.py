@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import generics
 from rest_framework import status
+from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -36,6 +37,8 @@ class ManagerFileListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ManagerFileSerializer
     permission_classes = (IsAdminUser,)
     pagination_class = CustomItemPagination
+    filter_backends = (SearchFilter,)
+    search_fields = ("filename", )
 
     def get_queryset(self):
         try:
