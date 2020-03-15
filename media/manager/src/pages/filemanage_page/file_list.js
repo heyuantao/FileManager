@@ -3,6 +3,7 @@ import {Row, Col, Layout, Form, Icon, Input, Card, Button, Table, message, Popco
 import { fromJS, List} from "immutable";
 import moment from 'moment';
 import LinkModal from "./link_modal";
+import UploadModal from "./upload_modal";
 import Settings from "../../settings";
 
 const { Content } = Layout;
@@ -17,7 +18,7 @@ class FileList extends React.Component {
             fetching: false,
             tableData: fromJS([]),pagination: fromJS({ total: 0, pageSize: 8, current: 1}),
             linkModalVisible:false, linkModalInstanceId:0,
-            //expendRowKeys:fromJS([]),
+            uploadModalVisible:false,
         }
     }
     componentDidMount() {
@@ -88,6 +89,9 @@ class FileList extends React.Component {
     handleLinkModalClose =()=>{
         this.setState({linkModalVisible:false,linkModalInstanceId:0});
     }
+    handleUploadModalClose =()=>{
+        this.setState({uploadModalVisible:false});
+    }
     tableColumnFormat(){
         const tableColumn = [
             { title: "序号", dataIndex: "id", key: "id" },
@@ -103,7 +107,7 @@ class FileList extends React.Component {
             { title: "下载链接",  key: "url",
                 render: (text, record) => (
                     <div>
-                        <a onClick={(event)=>{this.handleLinkClick(record.id,record.filename)}}>URL</a>
+                        <a onClick={(event)=>{this.handleLinkClick(record.id,record.filename)}}>地址</a>
                     </div>
                 )
             },
@@ -135,7 +139,8 @@ class FileList extends React.Component {
                             </Form.Item>
                             <Form.Item style={{float:"right"}}>
                                 <Button onClick={()=>{this.handleSearchSubmit()}} type="primary" style={{marginRight:"10px"}}>查找</Button>
-                                <Button onClick={()=>{this.handleSearchClear()}} type="default">清空</Button>
+                                <Button onClick={()=>{this.handleSearchClear()}} type="default" style={{marginRight:"10px"}}>清空</Button>
+                                <Button onClick={()=>{this.setState({uploadModalVisible:true})}} type="default">文件上传</Button>
                             </Form.Item>
                         </Form>
                     </Col>
@@ -151,6 +156,7 @@ class FileList extends React.Component {
 
                 <LinkModal visible={this.state.linkModalVisible} instanceid={this.state.linkModalInstanceId}
                     onOK={()=>{this.handleLinkModalClose()}}></LinkModal>
+                <UploadModal visible={this.state.uploadModalVisible} onOK={()=>{this.handleUploadModalClose()}}></UploadModal>
             </div>
 
         )
