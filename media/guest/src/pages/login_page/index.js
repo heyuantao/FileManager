@@ -29,8 +29,8 @@ class LoginPage extends React.Component {
             return
         }
         req.post(Settings.loginAPIURL, this.state.formData.toJS()).then(function (response) {
-            if (response.data.redirect_url !== undefined) {
-                window.location.href = response.data.redirect_url;
+            if (response.data.dashboard_url !== undefined) {
+                window.location.href = response.data.dashboard_url;
             }
         }).catch(function (error) {
         })

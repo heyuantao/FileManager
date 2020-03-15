@@ -46,7 +46,7 @@ class LoginAPIView(APIView):
         if user is not None:
             login(request, user)
             if user.is_superuser:
-                return Response({"redirect_url": reverse("manager")}, status=status.HTTP_200_OK)
+                return Response({"dashboard_url": reverse("manager")}, status=status.HTTP_200_OK)
         else:
             return Response({"error_message": "用户名或密码错误 !"}, status=status.HTTP_400_BAD_REQUEST)
 

@@ -30,6 +30,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "homepage": "./manager/media/",
   "eslintConfig": {
     "extends": "react-app"
   },
