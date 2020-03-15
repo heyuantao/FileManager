@@ -3,7 +3,8 @@
 /__pycache__
 /MAIN/__pycache__
 /API/__pycache__
-/FileManager/__pycache__
+/API/migrations/__pycache__
 /MAIN/migrations/__pycache__
+/FileManager/__pycache__
 /MAIN/storage_client/__pycache__
 /MAIN/storage_client/tmp

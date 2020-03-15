@@ -40,7 +40,6 @@ class ReactUploader extends React.Component{
         if(this._uploader!==null){
             this._uploader.destroy();
         }
-        this.props.onUploadFinished();
         message.success('上传成功');
     }
 
@@ -55,7 +54,7 @@ class ReactUploader extends React.Component{
     handleUploadProcess =(task,key,file)=>{
         const clip_upload_url = "http://webstorage.heyuantao.cn/api/upload/";
         const clip_upload_success_url = "http://webstorage.heyuantao.cn/api/upload/success/";
-        const _this=this;
+        const _this = this;
         const uploader = WebUploader.create({
             //swf: 'https://cdn.bootcss.com/webuploader/0.1.1/Uploader.swf', //swf位置，这个可能与flash有关
             server: clip_upload_url,                        //接收每一个分片的服务器地址
@@ -63,11 +62,9 @@ class ReactUploader extends React.Component{
             formData: {task:task,key:key},
         });
 
-        uploader.on('startUpload', function() {       //开始上传时，调用该方法
-        });
+        uploader.on('startUpload', function(){ });        //开始上传时，调用该方法
 
         uploader.on('uploadProgress', function(file, percentage) { //一个分片上传成功后，调用该方法
-            //console.log(percentage);
             const percentage_string = parseInt(percentage*100);
             _this.setState({mediaPercent:percentage_string});
         });
@@ -79,6 +76,8 @@ class ReactUploader extends React.Component{
                 _this.uploadSuccessFinished();
             }).catch((err)=>{
                 console.log("Upload error finished !");
+                console.log(err);
+                console.log(err.res);
                 _this.uploadErrorFinished();
             })
         });
@@ -96,8 +95,6 @@ class ReactUploader extends React.Component{
     }
 
     handleUploadClick = () => {
-        //const token = this.props.token.value;
-        const token="213123";
         const {mediaFileList} = this.state;
         const new_file = mediaFileList[0];
         const new_file_name = this.makeid()+"_"+new_file.name;
@@ -108,12 +105,12 @@ class ReactUploader extends React.Component{
         //    return;
         //}
         this.setState({mediaUploading:true});
-        axios.post(uploadTaskAPIURL,{'key':new_file_name},{headers: {'Authorization': 'Token '+token}}
-        ).then((res)=>{
-            console.log(res.data);
+        req.post(uploadTaskAPIURL,{'key':new_file_name}).then((res)=>{
             const task = res.data.task;
             const key = res.data.key;
             const size = res.data.size;
+            console.log(task);
+            console.log(key);
             this.handleUploadProcess(task,key,new_file);
         }).catch((err)=>{
             message.error('初始化失败，请刷新该页面');

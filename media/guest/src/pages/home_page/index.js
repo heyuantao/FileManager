@@ -8,7 +8,7 @@ import Settings from "../../settings";
 
 const { Content } = Layout;
 const req = Settings.request;
-const filelistAPIURL = Settings.filelistAPIURL;
+const fileAPIURL = Settings.fileAPIURL;
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -42,7 +42,7 @@ class HomePage extends React.Component {
     fetchTableListData() {
         const formData = this.state.formData;
         const params = formData.toJS();
-        const apiURL = filelistAPIURL;
+        const apiURL = fileAPIURL;
         this.setState({fetching:true});
 
         req.get(apiURL,{params:params}).then((request)=>{

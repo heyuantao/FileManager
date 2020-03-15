@@ -148,7 +148,7 @@ class ManagerFileUploadTaskAPIView(APIView):
         try:
             key = request.data.get('key')
             taskInstance = LargeFileStorageInstance.create_upload_task(key,size_limit=-1)
-            return Response(json.dumps(taskInstance), status=status.HTTP_200_OK)
+            return Response(taskInstance, status=status.HTTP_200_OK)
         except MessageException:
             logger.error(traceback.print_exc())
             return Response({'error_message': 'webstorage api error'}, status=status.HTTP_400_BAD_REQUEST)
