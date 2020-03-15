@@ -24,6 +24,19 @@ class GuestFileSerializer(serializers.Serializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['id'] = instance.id
+
+        filesize = int(ret['filesize'])
+
+        if 0 <= filesize < 1024:
+            filesize = str(int(filesize)) + "B"
+        elif 1024 <= filesize < 1024 * 1024:
+            filesize = str(int(filesize / (1024))) + "KB"
+        elif 1024 * 1024 <= filesize < 1024 * 1024 * 1024:
+            filesize = str(int(filesize / (1024 * 1024))) + "MB"
+        else:
+            filesize = str(int(filesize / (1024 * 1024 * 1024))) + "GB"
+        ret['filesize'] = filesize
+        
         key = ret['key']
         ret['url'] = LargeFileStorageInstance.get_download_url(key)
         return ret
