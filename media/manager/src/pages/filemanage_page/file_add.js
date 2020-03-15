@@ -35,11 +35,20 @@ class FileAdd extends React.Component {
         return text;
     }
 
-    uploadSuccessFinished =()=>{
+    uploadSuccessFinished =(key)=>{
         this.setState({mediaUploading:false,mediaPercent: 0, mediaFileList: []});
         if(this._uploader!==null){
             this._uploader.destroy();
         }
+        let formData = this.state.formData.merge({key:key});
+        console.log("Upload");
+        console.log(formData.toJS());
+        req.post(fileAPIURL,formData.toJS()).then(()=>{
+            message.success('保存记录成功');
+        }).catch((error)=>{
+            message.error('保存记录失败');
+        })
+        //req.post()
         message.success('上传成功');
     }
 
@@ -73,11 +82,9 @@ class FileAdd extends React.Component {
             const data = {'task': task, 'key':key,'ext': file.source['ext'], 'type': file.source['type']};
             axios.post(clip_upload_success_url,data).then((res)=>{
                 console.log('Upload success finished !')
-                _this.uploadSuccessFinished();
+                _this.uploadSuccessFinished(key);
             }).catch((err)=>{
                 console.log("Upload error finished !");
-                console.log(err);
-                console.log(err.res);
                 _this.uploadErrorFinished();
             })
         });
@@ -105,6 +112,7 @@ class FileAdd extends React.Component {
             message.error("文件大小超出限制");
             return;
         }
+        this.setState({formData:this.state.formData.merge({filesize:new_file.size})});
         this.setState({mediaUploading:true});
         req.post(uploadTaskAPIURL,{'key':new_file_name}).then((res)=>{
             const task = res.data.task;

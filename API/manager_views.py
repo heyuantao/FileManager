@@ -143,7 +143,8 @@ class ManagerFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIVi
 
 class ManagerFileUploadTaskAPIView(APIView):
     def get(self,request):
-        size = 1024*1024*10
+        #size = 1024*1024*10
+        size = -1
         return Response({'size': size}, status=status.HTTP_200_OK)
     def post(self,request):
         try:
