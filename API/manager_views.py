@@ -143,7 +143,8 @@ class ManagerFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIVi
 
 class ManagerFileUploadTaskAPIView(APIView):
     def get(self,request):
-        return Response({'error_message': 'method not allow'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        size = 1024*1024*10
+        return Response({'size': size}, status=status.HTTP_200_OK)
     def post(self,request):
         try:
             key = request.data.get('key')

@@ -21,6 +21,7 @@ class FileAdd extends React.Component {
         this.state = {
             formData: fromJS({}),formFieldValidateInfo: "",
             fetching: false,
+            sizeLimit:0,
             editable: false, mediaFileList: [], mediaUploading: false, mediaPercent: 0, mediaUrl:"",
         }
     }
@@ -97,12 +98,13 @@ class FileAdd extends React.Component {
         const {mediaFileList} = this.state;
         const new_file = mediaFileList[0];
         const new_file_name = this.makeid()+"_"+new_file.name;
+        const sizeLimit = this.state.sizeLimit; //-1 is not limit
 
         console.log(new_file_name);
-        //if(new_file.size>1024*1024*50){
-        //    message.error("文件大小超出限制");
-        //    return;
-        //}
+        if( (new_file.size>sizeLimit)&&(sizeLimit!==-1)){
+            message.error("文件大小超出限制");
+            return;
+        }
         this.setState({mediaUploading:true});
         req.post(uploadTaskAPIURL,{'key':new_file_name}).then((res)=>{
             const task = res.data.task;
@@ -123,8 +125,18 @@ class FileAdd extends React.Component {
         this.setState({mediaFileList:[],mediaUploading:false});
     }
 
+    getSize =()=>{
+        req.get(uploadTaskAPIURL,{}).then((res)=>{
+            const sizeLimit = res.data.size;
+            this.setState({sizeLimit:sizeLimit});
+        }).catch((err)=>{
+            message.error('获取文件上传大小上限失败');
+        })
+    }
+
     componentDidMount() {
         this._uploader = null;
+        this.getSize();
     }
     componentWillUnmount() {
         if(this._uploader!==null){
@@ -178,7 +190,7 @@ class FileAdd extends React.Component {
                     </Col>
                 </Row>
                 <Row type="flex" justify="space-around" align="middle" style={{marginTop:10}}>
-                    <Col span={8}>
+                    <Col span={12} >
                         <Form className="login-form">
                             <FormItem {...formItemLayout} label="文件名"  required={true}>
                                 <Input value={formData.get("filename")} disabled={false}
