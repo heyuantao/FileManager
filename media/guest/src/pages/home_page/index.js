@@ -29,7 +29,7 @@ class HomePage extends React.Component {
         let formData = this.state.formData;
         this.setState({ formFieldValidateInfo: "" })
 
-        if (!formData.get("filename")) {
+        if (!formData.get("search")) {
             message.error("文件名不能为空！");
             return -1
         }
@@ -69,8 +69,10 @@ class HomePage extends React.Component {
     }
     handleSearchClear(){
         const formData = fromJS({});
-        const externalexamTableData = fromJS([]);
-        this.setState({formData:formData,externalTableData:externalexamTableData});
+        const tableData = fromJS([]);
+        this.setState({formData:formData,tableData:tableData},()=>{
+            this.fetchTableListData();
+        });
     }
     tableColumnFormat(){
         const tableColumn = [
@@ -87,7 +89,7 @@ class HomePage extends React.Component {
             { title: "下载链接",  key: "url",
                 render: (text, record) => (
                     <div>
-                        <a href={record.url}>下载</a>
+                        <a href={record.url} target="_blank">下载</a>
                     </div>
                 )
             }
@@ -99,8 +101,8 @@ class HomePage extends React.Component {
         return(
             <Form layout="inline">
                 <Form.Item label={"文件名"} >
-                    <Input value={formData.get("name")} onChange={(e)=>{this.handleFormFieldChange(e.target.value,"name")}}
-                           prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />} placeholder="winrar" />
+                    <Input value={formData.get("search")} onChange={(e)=>{this.handleFormFieldChange(e.target.value,"search")}}
+                            placeholder="winrar" />
                 </Form.Item>
                 <Form.Item style={{float:"right"}}>
                     <Button onClick={()=>{this.handleSearchSubmit()}} type="primary" style={{marginRight:"10px"}}>查找</Button>

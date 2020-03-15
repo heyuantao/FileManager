@@ -14,7 +14,8 @@ import json
 import moment
 import random
 import logging
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,8 @@ class GuestFileListAPIView(generics.ListAPIView):
     serializer_class = GuestFileSerializer
     permission_classes = (AllowAny,)
     pagination_class = CustomItemPagination
+    filter_backends = (SearchFilter,)
+    search_fields = ("filename", )
 
     def get_queryset(self):
         try:
