@@ -3,7 +3,6 @@ import {Row, Col, Layout, Form, Icon, Input, Card, Button, Table, message, Popco
 import { fromJS, List} from "immutable";
 import moment from 'moment';
 import LinkModal from "./link_modal";
-import UploadModal from "./upload_modal";
 import Settings from "../../settings";
 
 const { Content } = Layout;
@@ -35,15 +34,14 @@ class FileList extends React.Component {
         return 1;
     }
     handleTableChange(pagination, filters, sorter){
+        console.log(pagination);
         let newPagination=fromJS(pagination)
         this.setState({pagination:newPagination},()=>{this.fetchTableListData()})
     }
     fetchTableListData() {
-        const formData = this.state.formData;
-        const params = formData.toJS();
+        const params = this.state.pagination.merge(this.state.formData).toJS();
         const apiURL = fileAPIURL;
         this.setState({fetching:true});
-
         req.get(apiURL,{params:params}).then((request)=>{
             const tableData = fromJS(request.data.items);
             const pagination = fromJS(request.data.pagination);
@@ -75,10 +73,9 @@ class FileList extends React.Component {
     }
     handleDeleteTableItem = (id,key)=>{
         const apiURL = fileAPIURL+id+"/";
-        console.log(apiURL);
-        return;
         req.delete(apiURL,{"key":key}).then((res)=>{
             message.success('Delete Success !');
+            this.fetchTableListData();
         }).catch((err)=>{
             message.error('Delete Error !');
         })
@@ -94,7 +91,6 @@ class FileList extends React.Component {
     }
     tableColumnFormat(){
         const tableColumn = [
-            { title: "序号", dataIndex: "id", key: "id" },
             { title: "文件名", dataIndex: "filename", key: "filename" },
             { title: "更新日期", key: "uploaddate",
                 render: (text, record) => (
@@ -104,6 +100,14 @@ class FileList extends React.Component {
                 )
             },
             { title: "文件大小", dataIndex: "filesize", key: "filesize" },
+            { title: "可浏览", key: "browserable",
+                render: (text,record) =>(
+                    <div>
+                        { (record.browserable===true)&&<span>普通用户可见</span>}
+                        { (record.browserable===false)&&<span>仅管理员可见</span>}
+                    </div>
+                )
+            },
             { title: "下载链接",  key: "url",
                 render: (text, record) => (
                     <div>
@@ -147,7 +151,7 @@ class FileList extends React.Component {
                 </Row>
                 <Row type="flex" justify="space-around" align="middle" style={{marginTop:10}}>
                     <Col span={24}>
-                        <Table dataSource={this.state.tableData.toJS()} rowKey="id"
+                        <Table dataSource={this.state.tableData.toJS()} rowKey="id" pagination={this.state.pagination.toJS()}
                                onChange={(pagination, filters, sorter)=>{this.handleTableChange(pagination, filters, sorter)}}
                                columns={this.tableColumnFormat()}>
                         </Table>
@@ -156,9 +160,6 @@ class FileList extends React.Component {
 
                 <LinkModal visible={this.state.linkModalVisible} instanceid={this.state.linkModalInstanceId}
                     onOK={()=>{this.handleLinkModalClose()}}></LinkModal>
-                {/*
-                <UploadModal visible={this.state.uploadModalVisible} onOK={()=>{this.handleUploadModalClose()}}></UploadModal>
-                */}
             </div>
 
         )

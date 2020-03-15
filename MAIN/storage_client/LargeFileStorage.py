@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime,timedelta
+import random
+import string
 from MAIN.exceptions import MessageException
 from MAIN.utils import Singleton
 from django.conf import settings
@@ -38,3 +40,8 @@ class LargeFileStorage:
         if (s != WebStorageClientStatus.KEY_OCCUPIED) and (s!= WebStorageClientStatus.SUCCESS):
             raise MessageException('Error in delete file list in LargeFileStorage.create_upload_task() ')
         return r
+
+    def random_key_prefix(self,stringLength=6):
+        """Generate a random string of fixed length """
+        letters = string.ascii_letters
+        return ''.join(random.choice(letters) for i in range(stringLength))

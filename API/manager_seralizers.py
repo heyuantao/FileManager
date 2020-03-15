@@ -19,13 +19,25 @@ class ManagerFileSerializer(serializers.Serializer):
     filesize = serializers.IntegerField(default=0)
     key = serializers.CharField(max_length=300)
     uploaddate = serializers.DateTimeField(read_only=True)
-    browserable = serializers.BooleanField(default=True)
+    browserable = serializers.BooleanField(default=True) #broswerable
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['id'] = instance.id
         key = ret['key']
         filename = ret['filename']
+        filesize = int(ret['filesize'])
+
+        if 0<= filesize <1024:
+            filesize = str(int(filesize))+"B"
+        elif 1024<=filesize<1024*1024:
+            filesize = str(int(filesize / (1024))) + "KB"
+        elif 1024*1024 <= filesize < 1024 * 1024 *1024:
+            filesize = str(int(filesize / (1024 * 1024))) + "MB"
+        else:
+            filesize = str(int(filesize / (1024 * 1024 *1024))) + "GB"
+        ret['filesize']= filesize
+
         ret['url'] = LargeFileStorageInstance.get_download_url(key, realname=filename)
         return ret
 

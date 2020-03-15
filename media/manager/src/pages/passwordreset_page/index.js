@@ -85,10 +85,6 @@ class PasswordResetPage extends React.Component {
                                 <Input value={formData.get("username")} disabled={true}
                                     prefix={<Icon type="user" style={{ fontSize: 13 }} />}  placeholder="请输入密码" />
                             </FormItem>
-                            <FormItem {...formItemLayout} label="类别" >
-                                <Input value={formData.get("category")+"方向管理员"} disabled={true}
-                                    prefix={<Icon type="usergroup-add" style={{ fontSize: 13 }} />}  placeholder="请输入密码" />
-                            </FormItem>
                             <FormItem {...formItemLayout} label="请输入密码" required={true}>
                                 <Input value={formData.get("password")} onChange={(e) => { this.handleFieldChange(e.target.value, "password") }}
                                     prefix={<Icon type="eye-invisible" style={{ fontSize: 13 }} />} type="password" placeholder="请输入密码" />

@@ -1,11 +1,7 @@
 import React from "react";
 import {Row, Col, Layout, Form, Icon, Input, Card, Button, Table, message, Popconfirm, Radio, Upload, Alert} from "antd";
 import { fromJS, List} from "immutable";
-import moment from 'moment';
-import LinkModal from "./link_modal";
-import UploadModal from "./upload_modal";
 import Settings from "../../settings";
-import ReactUploader from "../componments/ReactUploader";
 import WebUploader from "webuploader";
 import axios from "axios";
 
@@ -19,8 +15,7 @@ class FileAdd extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            formData: fromJS({}),formFieldValidateInfo: "",
-            fetching: false,
+            formData: fromJS({browserable:true}),formFieldValidateInfo: "",fetching: false,
             sizeLimit:0,
             editable: false, mediaFileList: [], mediaUploading: false, mediaPercent: 0, mediaUrl:"",
         }
@@ -45,11 +40,10 @@ class FileAdd extends React.Component {
         console.log(formData.toJS());
         req.post(fileAPIURL,formData.toJS()).then(()=>{
             message.success('保存记录成功');
+            this.props.close();
         }).catch((error)=>{
             message.error('保存记录失败');
         })
-        //req.post()
-        message.success('上传成功');
     }
 
     uploadErrorFinished =()=>{
@@ -104,7 +98,8 @@ class FileAdd extends React.Component {
     handleUploadClick = () => {
         const {mediaFileList} = this.state;
         const new_file = mediaFileList[0];
-        const new_file_name = this.makeid()+"_"+new_file.name;
+        //const new_file_name = this.makeid()+"_"+new_file.name;
+        const new_file_name = new_file.name;
         const sizeLimit = this.state.sizeLimit; //-1 is not limit
 
         console.log(new_file_name);
@@ -159,14 +154,12 @@ class FileAdd extends React.Component {
     }
 
     validateForm() {
+        console.log(this.state.formData.toJS());
         let formData = this.state.formData;
         this.setState({ formFieldValidateInfo: "" });
         if ( !formData.get("filename") ) {
             this.setState({ formFieldValidateInfo: "请输入文件名 ！" }); return -1;
         }
-        //if ( !formData.get("broswerable") ) {
-        //    this.setState({ formFieldValidateInfo: "请选择是否可浏览 ！" }); return -1;
-        //}
         if( this.state.mediaFileList.length === 0 ){
             this.setState({ formFieldValidateInfo: "请选择文件 ！" }); return -1;
         }
@@ -176,11 +169,15 @@ class FileAdd extends React.Component {
     render() {
         const _this = this;
         const formData = this.state.formData;
+        const disabled = this.state.mediaUploading;
         const formItemLayout = { labelCol: { xs: { span: 24 }, sm: { span: 8 }, }, wrapperCol: { xs: { span: 24 }, sm: { span: 16 }, }, };
         const tailFormItemLayout = { wrapperCol: { xs: { span: 24, offset: 0, }, sm: { span: 16, offset: 8, }, }, };
         const {mediaFileList,editable,mediaUploading,mediaPercent} = this.state;
         const uploadButtonprops = {
-            beforeUpload: file => {_this.setState((state) => ({mediaFileList: [file],}),()=>{_this.validateForm()} ); return false;},
+            beforeUpload: file => {
+                const formData = this.state.formData.merge({filename:file.name})
+                _this.setState({mediaFileList: [file],formData:formData},()=>{_this.validateForm()} ); return false;
+                },
             onChange: () =>{},
             showUploadList:false,
             mediaFileList,
@@ -189,40 +186,35 @@ class FileAdd extends React.Component {
             <div>
                 <Row type="flex" justify="space-between" align="middle" style={{marginTop:10}}>
                     <Col><h2>添加文件</h2></Col>
-                    <Col>
-                        <Form layout="inline">
-                            <Form.Item style={{float:"right"}}>
-                                <Button onClick={()=>{this.props.close()}} type="default">取消</Button>
-                            </Form.Item>
-                        </Form>
-                    </Col>
                 </Row>
                 <Row type="flex" justify="space-around" align="middle" style={{marginTop:10}}>
                     <Col span={12} >
                         <Form className="login-form">
-                            <FormItem {...formItemLayout} label="文件名"  required={true}>
-                                <Input value={formData.get("filename")} disabled={false}
+                            <FormItem label="选择文件" required={true}  {...formItemLayout} >
+                                <Upload {...uploadButtonprops}>
+                                    <Button disabled={disabled}>
+                                        选择文件
+                                    </Button>
+                                </Upload>
+                            </FormItem>
+                            <FormItem {...formItemLayout} label="上传后的文件名"  required={true}>
+                                <Input value={formData.get("filename")} disabled={disabled}
                                        onChange={(e) => { this.handleFieldChange(e.target.value, "filename") }}
                                        placeholder="" />
                             </FormItem>
                             <Form.Item label="浏览状态" required={true} {...formItemLayout}  >
-                                <Radio.Group value={formData.get("broswerable")} onChange={(e) => { this.handleFieldChange(e.target.value, "broswerable") }}
-                                    defaultValue={true} buttonStyle="solid" >
+                                <Radio.Group value={formData.get("browserable")} onChange={(e) => { this.handleFieldChange(e.target.value, "browserable") }}
+                                    defaultValue={true} buttonStyle="solid" disabled={disabled}>
                                     <Radio.Button value={true}>可浏览</Radio.Button>
                                     <Radio.Button value={false}>不可浏览</Radio.Button>
                                 </Radio.Group>
                             </Form.Item>
-                            <FormItem label="选择文件" required={true}  {...formItemLayout}>
-                                <Upload {...uploadButtonprops} >
-                                    <Button>
-                                        选择文件
-                                    </Button>
-                                </Upload>
-                                <span style={{marginRight:"10px"}}></span>
+                            <FormItem hasFeedback  {...tailFormItemLayout}>
                                 <Button type="primary" onClick={this.handleUploadClick} disabled={this.state.formFieldValidateInfo==="" ? false:true}
-                                        loading={mediaUploading} style={{ marginTop: 16 }} >
-                                    {mediaUploading ? '上传中: '+mediaPercent+"%" : '开始上传'}
+                                        loading={mediaUploading} style={{ marginTop: 16,marginRight:20}} >
+                                    {mediaUploading ? '上传中: '+mediaPercent+"%" : '上传'}
                                 </Button>
+                                <Button onClick={()=>{this.props.close()}}>取消</Button>
                             </FormItem>
                             <FormItem hasFeedback  {...tailFormItemLayout}>
                                 {(this.state.formFieldValidateInfo !== "") &&
