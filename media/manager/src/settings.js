@@ -43,5 +43,5 @@ export default{
     userAPIURL:"/downloads/api/v1/user/",
     loginAPIURL:"/downloads/api/v1/login/",
     logoutAPIURL:"/downloads/api/v1/logout/",
-    filelistAPIURL:"/downloads/api/v1/guest/file/list/",
+    filelistAPIURL:"/downloads/api/v1/manager/file/list/",
 }
