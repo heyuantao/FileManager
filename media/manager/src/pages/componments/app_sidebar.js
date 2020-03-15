@@ -3,7 +3,7 @@ import { hashHistory,Link } from "react-router";
 import { Icon, Layout, Menu } from "antd";
 import {connect} from "react-redux";
 import {fromJS} from "immutable";
-import * as LocationActionCreator from "./store/LocationIndicatorActionCreator";
+import * as LocationActionCreator from "../commons/store/location_indicator_action_creator";
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 

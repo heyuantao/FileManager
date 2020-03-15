@@ -1,7 +1,6 @@
 import React from "react";
-import React from "react";
 import { Layout } from "antd";
-import SideBar from "./common/SideBar";
+import AppSideBar from "./componments/app_sidebar";
 import AppPageHeader from "./componments/app_page_header";
 import AppPageFooter from "./componments/app_page_footer";
 
@@ -16,7 +15,7 @@ class App extends React.Component{
     render(){
         return(
              <Layout style={{ minHeight: "100vh" }}>
-                    <SideBar></SideBar>
+                    <AppSideBar></AppSideBar>
                     <Layout>
                         <AppPageHeader></AppPageHeader>
                         <Content style={{ margin: "0 10px" }}>
