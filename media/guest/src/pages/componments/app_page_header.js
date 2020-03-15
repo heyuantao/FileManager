@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { connect } from "react-redux";
 import { fromJS } from "immutable";
 import "./app_page_header.css";
+import * as UserActionCreator from "../commons/store/user_action_creator";
 //import "./index.css";
 //import * as NavActionCreator from "./store/NavActionCreator";
 
@@ -14,6 +15,7 @@ class AppPageHeader extends React.Component {
 
     }
     componentDidMount() {
+        this.props.fetchUser();
     }
     handleGoToUserDashboard(){
         const user = this.props.user.get("user");
@@ -34,8 +36,7 @@ class AppPageHeader extends React.Component {
                         </div>
                     </Col>
                     <Col span={15} style={{float: "right"}}>
-                        <Menu theme="dark" mode="horizontal" onSelect={(item)=>{this.handleMenuSelect(item)}}
-                               style={{lineHeight:"64px"}}>
+                        <Menu theme="dark" mode="horizontal" onSelect={(item)=>{this.handleMenuSelect(item)}} style={{lineHeight:"64px"}}>
                             { (isLogin===false)&&
                                 <Menu.Item key="login" style={{float: "right"}}>
                                     <Link to="/login">登录</Link>
@@ -46,6 +47,9 @@ class AppPageHeader extends React.Component {
                                     <a onClick={()=>{this.handleGoToUserDashboard()}}>管理文件({user.get("username")}已登录)</a>
                                 </Menu.Item>
                             }
+                            <Menu.Item key="home" style={{float: "right"}}>
+                                    <Link to="/home">文件浏览</Link>
+                            </Menu.Item>
                         </Menu>
                     </Col>
                 </Row>
@@ -62,6 +66,12 @@ const navStoreToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        login(username,password,captcha){
+            dispatch(UserActionCreator.login(username,password,captcha))
+        },
+        fetchUser(){
+            dispatch(UserActionCreator.getUser());
+        }
     }
 }
 

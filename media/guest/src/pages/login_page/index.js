@@ -23,17 +23,14 @@ class LoginPage extends React.Component {
             captchaImageSrc: "",
         }
     }
-    componentDidMount() {
-        this.props.fetchUser()
-    }
+
     handleLoginSubmit() {
         if (this.validateFormField() < 0) {
             return
         }
-        //this.props.login("abc","123","2232")
         req.post(Settings.loginAPIURL, this.state.formData.toJS()).then(function (response) {
-            if (response.data.dashboard_url !== undefined) {
-                window.location.href = response.data.dashboard_url;
+            if (response.data.redirect_url !== undefined) {
+                window.location.href = response.data.redirect_url;
             }
         }).catch(function (error) {
         })
@@ -48,10 +45,12 @@ class LoginPage extends React.Component {
             this.setState({ formFieldValidateInfo: "用户名不能为空！" })
             return -1
         }
+        {/*
         if (!Utils.isEmailValid(formData.get("email"))) {
             this.setState({ formFieldValidateInfo: "请使用邮箱注册 ！" })
             return -1
         }
+        */}
         if (!formData.get("password")) {
             this.setState({ formFieldValidateInfo: "请输入密码 ！" })
             return -1
@@ -62,11 +61,13 @@ class LoginPage extends React.Component {
         }
         return 1
     }
+
     handleFieldChange(value, field) {
         let dict = {}; dict[field] = value;
         let change = fromJS(dict);
         this.setState({ formData: this.state.formData.merge(change) }, () => { this.validateFormField() })
     }
+
     handleGoToUserDashboard(){
         const user = this.props.user.get("user");
         const isLogin = this.props.user.get("isLogin");
@@ -74,10 +75,6 @@ class LoginPage extends React.Component {
             window.location.href = user.get('dashboard_url');
         }
     }
-
-    //componentDidMount(){
-    //    this.refreshCaptch()
-    //}
 
     render() {
         const formData = this.state.formData;
@@ -91,10 +88,10 @@ class LoginPage extends React.Component {
                         <div style={{position: "absolute", width: "100%", top: "20%"}}>
                             <Row type="flex" justify="center" align="middle" style={{}}>
                                 <Col md={{span: 8}}>
-                                    <h1 style={{height: "60px",lineHeight: "60px",color: "black",textAlign: "center"}}>用户登录（郑州航空工业管理学院）</h1>
+                                    <h1 style={{height: "60px",lineHeight: "60px",color: "black",textAlign: "center"}}>用户登录</h1>
                                 </Col>
                             </Row>
-                            <Row type="flex" justify="center" align="middle">
+                            <Row type="flex" justify="center" align="middle" style={{marginTop:"30px"}}>
                                 <Col md={{span: 6}}>
                                     <Form className="login-form">
                                         <FormItem>
@@ -110,15 +107,6 @@ class LoginPage extends React.Component {
                                             }}
                                                    prefix={<Icon type="lock" style={{fontSize: 13}}/>} type="password"
                                                    placeholder="请输入密码" size="large"/>
-                                        </FormItem>
-                                        <FormItem>
-                                            <Row type="flex" justify="start" align="middle">
-                                                <Link to="/forgetpassword" style={{marginRight: 10}}>忘记密码</Link>
-                                                <Link to="/registration">我没有账号</Link>
-                                            </Row>
-                                        </FormItem>
-                                        <FormItem hasFeedback>
-                                            <Alert message={'提示：新用户报名前请先注册，注册请点击上方链接"我没有账号"'} type="warning"/>
                                         </FormItem>
                                         <FormItem hasFeedback>
                                             {(this.state.formFieldValidateInfo !== "") &&
@@ -192,14 +180,7 @@ const mapStoreToProps = (store) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return{
-        login(username,password,captcha){
-            dispatch(UserActionCreator.login(username,password,captcha))
-        },
-        fetchUser(){
-            dispatch(UserActionCreator.getUser());
-        }
-    }
+    return{   }
 }
 
 export default connect(mapStoreToProps,mapDispatchToProps)(LoginPage)
