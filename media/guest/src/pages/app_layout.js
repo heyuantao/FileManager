@@ -38,6 +38,7 @@ class AppLayout extends React.Component{
                     <IndexRedirect to="/home" ></IndexRedirect>
                     <Route path="/login" component={LoginPage} onEnter={(s,r)=>(this.handleOnEnter(s,r))}></Route>
                     <Route path="/home" component={HomePage} onEnter={(s,r)=>(this.handleOnEnter(s,r))}></Route>
+                    <Route path="/*" component={HomePage} onEnter={(s,r)=>(this.handleOnEnter(s,r))}></Route>
                     {/*
                     <Route path="/help" component={HelpPage} onEnter={(s,r)=>(this.handleOnEnter(s,r))}></Route>
                     <Route path="/query" component={QueryPage} onEnter={(s,r)=>(this.handleOnEnter(s,r))} ></Route>
@@ -49,7 +50,7 @@ class AppLayout extends React.Component{
 
                     <Route path="/activeaccount/:token" component={ActiveAccountPage} onEnter={(s,r)=>(this.handleOnEnter(s,r))}></Route>
 
-                    <Route path="/*" component={HomePage} onEnter={(s,r)=>(this.handleOnEnter(s,r))}></Route>
+
                     */}
                 </Route>
             </Router>
