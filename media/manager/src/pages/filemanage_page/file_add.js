@@ -76,7 +76,6 @@ class FileAdd extends React.Component {
         message.error('上传失败')
     }
     onReactWebUploaderNext =(percent)=>{
-        console.log(percent);
         this.setState({mediaPercent:percent});
     }
     uploadFile =(file,key,task)=>{
