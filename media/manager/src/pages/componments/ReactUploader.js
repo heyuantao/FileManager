@@ -8,6 +8,9 @@ const req = Settings.request;
 const uploadTaskAPIURL = Settings.uploadTaskAPIURL;
 //import { UploadOutlined } from '@ant-design/icons';
 
+//props.onSuccess props.onNext props.onError
+//props.file props.task props.key
+
 class ReactUploader extends React.Component{
     constructor(props) {
         super(props);
