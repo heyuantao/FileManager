@@ -15,7 +15,7 @@ class FileList extends React.Component {
         this.state = {
             formData: fromJS({}),formFieldValidateInfo: "",
             fetching: false,
-            tableData: fromJS([]),pagination: fromJS({ total: 0, pageSize: 8, current: 1}),
+            tableData: fromJS([]),pagination: fromJS({ total: 0, pageSize: 10, current: 1}),
             linkModalVisible:false, linkModalInstanceId:0,
         }
     }

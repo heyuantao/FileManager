@@ -28,11 +28,15 @@ req.interceptors.response.use(
             if( (response.status!==302)&&(response.data!==undefined)&&(response.data.error_message!==undefined)){
                 message.error(response.data.error_message)
             }
+            if( (response.status===302)&&(response.data!==undefined)&&(response.data.redirect_url!==undefined)  ){
+                window.location.href=response.data.redirect_url;
+            }
             if( response.status >=500 ){
                 message.error("请检查您的网络连接")
             }
         }
         throw error;
+
     }
 );
 
