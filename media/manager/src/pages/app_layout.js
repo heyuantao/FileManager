@@ -3,7 +3,7 @@ import {Router,Route,hashHistory,IndexRedirect} from "react-router";
 import App from "./app";
 import FileManagePage from "./filemanage_page";
 import PasswordResetPage from "./passwordreset_page";
-import TestUploadPage from "./testupload_page";
+//import TestUploadPage from "./testupload_page";
 
 export default class AppLayout extends React.Component{
     handleOnEnter(next,replace){
@@ -13,8 +13,9 @@ export default class AppLayout extends React.Component{
             <Router history={hashHistory} >
                 <Route path="/" component={App}>
                     <IndexRedirect to="/filemanage" ></IndexRedirect>
-                    <Route path="/testupload" component={TestUploadPage} onEnter={(s,r)=>(this.handleOnEnter(s,r))}></Route>
+
                     {/*
+                    <Route path="/testupload" component={TestUploadPage} onEnter={(s,r)=>(this.handleOnEnter(s,r))}></Route>
                     <Route path="/examination/:eid/enrollment" component={ExamEnrollmentPage} onEnter={this.handleOnEnter}></Route>
                     <Route path="/userenrollment" component={EnrollmentPage} onEnter={this.handleOnEnter}></Route>
                     */}

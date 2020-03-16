@@ -1,14 +1,15 @@
 import React from "react";
-import {Row, Col, Layout, Form, Icon, Input, Card, Button, Table, message, Popconfirm, Radio, Upload, Alert} from "antd";
-import { fromJS, List} from "immutable";
+import {Link} from "react-router";
+import {Row, Col, Icon, Form, Input, Button, Alert, message, Upload, Radio} from 'antd';
+import { fromJS } from "immutable";
+import axios from 'axios';
 import Settings from "../../settings";
-import WebUploader from "webuploader";
-import axios from "axios";
+import reactWebUploader from "../componments/ReactWebUploader";
 
-const { Content } = Layout;
-const req = Settings.request;
-const fileAPIURL = Settings.fileAPIURL;
 const FormItem = Form.Item;
+
+const req = Settings.request
+const fileAPIURL = Settings.fileAPIURL;
 const uploadTaskAPIURL = Settings.uploadTaskAPIURL;
 
 class FileAdd extends React.Component {
@@ -20,133 +21,16 @@ class FileAdd extends React.Component {
             editable: false, mediaFileList: [], mediaUploading: false, mediaPercent: 0, mediaUrl:"",
         }
     }
-
-    makeid =()=> {
-        let text = "";
-        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        for (var i = 0; i < 5; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-        return text;
-    }
-
-    uploadSuccessFinished =(key)=>{
-        this.setState({mediaUploading:false,mediaPercent: 0, mediaFileList: []});
-        if(this._uploader!==null){
-            this._uploader.destroy();
-        }
-        let formData = this.state.formData.merge({key:key});
-        console.log("Upload");
-        console.log(formData.toJS());
-        req.post(fileAPIURL,formData.toJS()).then(()=>{
-            message.success('保存记录成功');
-            this.props.close();
-        }).catch((error)=>{
-            message.error('保存记录失败');
-        })
-    }
-
-    uploadErrorFinished =()=>{
-        this.setState({mediaUploading:false,mediaPercent: 0});
-        if(this._uploader!==null){
-            this._uploader.destroy();
-        }
-        message.error('上传失败')
-    }
-
-    handleUploadProcess =(task,key,file)=>{
-        const clip_upload_url = "http://webstorage.heyuantao.cn/api/upload/";
-        const clip_upload_success_url = "http://webstorage.heyuantao.cn/api/upload/success/";
-        const _this = this;
-        const uploader = WebUploader.create({
-            //swf: 'https://cdn.bootcss.com/webuploader/0.1.1/Uploader.swf', //swf位置，这个可能与flash有关
-            server: clip_upload_url,                        //接收每一个分片的服务器地址
-            chunked: true, chunkSize: 5 * 1024 * 1024, chunkRetry: 3, threads: 3, duplicate: true,
-            formData: {task:task,key:key},
-        });
-
-        uploader.on('startUpload', function(){ });        //开始上传时，调用该方法
-
-        uploader.on('uploadProgress', function(file, percentage) { //一个分片上传成功后，调用该方法
-            const percentage_string = parseInt(percentage*100);
-            _this.setState({mediaPercent:percentage_string});
-        });
-
-        uploader.on('uploadSuccess', function(file) { //整个文件的所有分片都上传成功，调用该方法 上传的信息（文件唯一标识符，文件后缀名）
-            const data = {'task': task, 'key':key,'ext': file.source['ext'], 'type': file.source['type']};
-            axios.post(clip_upload_success_url,data).then((res)=>{
-                console.log('Upload success finished !')
-                _this.uploadSuccessFinished(key);
-            }).catch((err)=>{
-                console.log("Upload error finished !");
-                _this.uploadErrorFinished();
-            })
-        });
-
-        uploader.on('uploadError', function(file) {   //上传过程中发生异常，调用该方法
-            console.log('Upload error finished !');
-            _this.uploadErrorFinished();
-        });
-
-        const runtimeForRuid = new WebUploader.Runtime.Runtime();
-        const wuFile = new WebUploader.File(new WebUploader.Lib.File(WebUploader.guid('rt_'),file));
-        uploader.addFiles(wuFile);
-        this._uploader = uploader;
-        uploader.upload();
-    }
-
-    handleUploadClick = () => {
-        const {mediaFileList} = this.state;
-        const new_file = mediaFileList[0];
-        //const new_file_name = this.makeid()+"_"+new_file.name;
-        const new_file_name = new_file.name;
-        const sizeLimit = this.state.sizeLimit; //-1 is not limit
-
-        console.log(new_file_name);
-        if( (new_file.size>sizeLimit)&&(sizeLimit!==-1)){
-            message.error("文件大小超出限制");
-            return;
-        }
-        this.setState({formData:this.state.formData.merge({filesize:new_file.size})});
-        this.setState({mediaUploading:true});
-        req.post(uploadTaskAPIURL,{'key':new_file_name}).then((res)=>{
-            const task = res.data.task;
-            const key = res.data.key;
-            const size = res.data.size;
-            console.log(task);
-            console.log(key);
-            this.handleUploadProcess(task,key,new_file);
-        }).catch((err)=>{
-            message.error('初始化失败，请刷新该页面');
-            this.setState({mediaUploading:false});
-        })
-    }
-
-    uploadFinished =()=>{
-        const uploader = this._uploader;
-        uploader.reset();
-        this.setState({mediaFileList:[],mediaUploading:false});
-    }
-
-    getSize =()=>{
-        req.get(uploadTaskAPIURL,{}).then((res)=>{
-            const sizeLimit = res.data.size;
-            this.setState({sizeLimit:sizeLimit});
-        }).catch((err)=>{
-            message.error('获取文件上传大小上限失败');
-        })
-    }
-
-    componentDidMount() {
-        this._uploader = null;
-        this.getSize();
+    componentDidMount(){
+        this.fetchData()
     }
     componentWillUnmount() {
-        if(this._uploader!==null){
-            this._uploader.destroy();
+        if(this._reactWebUploader!==null){
+            this._reactWebUploader.unscribe();
         }
     }
-
+    fetchData(){
+    }
     handleFieldChange(value, field) {
         let dict = {}; dict[field] = value;
         let change = fromJS(dict);
@@ -166,6 +50,61 @@ class FileAdd extends React.Component {
         return 1;
     }
 
+    onReactWebUploaderSuccess =(key)=>{
+        console.log("上传成功");
+        if(this._reactWebUploader!==null){
+            this._reactWebUploader.unscribe();
+        }
+        this._reactWebUploader=null;
+
+        this.setState({mediaUploading:false,mediaPercent: 0, mediaFileList: []});
+        const formData = this.state.formData.merge({key:key});
+        req.post(fileAPIURL,formData.toJS()).then(()=>{
+            message.success('保存记录成功');
+            this.props.close();
+        }).catch((error)=>{
+            message.error('保存记录失败');
+        })
+        this.setState({mediaUploading:true});
+    }
+    onReactWebUploaderError =(key)=>{
+        if(this._reactWebUploader!==null){
+            this._reactWebUploader.unscribe();
+        }
+        this._reactWebUploader=null;
+        this.setState({mediaUploading:true});
+        message.error('上传失败')
+    }
+    onReactWebUploaderNext =(percent)=>{
+        console.log(percent);
+        this.setState({mediaPercent:percent});
+    }
+    uploadFile =(file,key,task)=>{
+        reactWebUploader.upload(file,key,task);
+        this._reactWebUploader= reactWebUploader;
+        reactWebUploader.scribe(this.onReactWebUploaderSuccess,this.onReactWebUploaderError,this.onReactWebUploaderNext);
+
+    }
+
+    handleUploadClick =()=>{
+        let file = null;
+        if(this.state.mediaFileList.length===0){
+            message.error('未选择文件');
+            return;
+        }
+        file = this.state.mediaFileList[0];
+        this.setState({mediaUploading:true});
+        req.post(uploadTaskAPIURL,{'key':file.name}).then((res)=>{
+            const task = res.data.task;
+            const key = res.data.key;
+            const size = res.data.size;
+            this.uploadFile(file,key,task);
+        }).catch((err)=>{
+            message.error('初始化失败，请刷新该页面');
+            this.setState({mediaUploading:false});
+        })
+
+    }
     render() {
         const _this = this;
         const formData = this.state.formData;
@@ -227,7 +166,6 @@ class FileAdd extends React.Component {
 
                 </Row>
             </div>
-
         )
     }
 }
