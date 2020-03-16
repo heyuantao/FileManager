@@ -44,7 +44,7 @@ class ManagerFileListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         try:
-            return FileModel.objects.all()
+            return FileModel.objects.all().order_by("-uploaddate")
         except MessageException as e:
             logger.error(traceback.format_exc())
             raise e  # rethrow exception

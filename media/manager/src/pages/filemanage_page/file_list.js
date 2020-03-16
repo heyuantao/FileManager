@@ -17,7 +17,6 @@ class FileList extends React.Component {
             fetching: false,
             tableData: fromJS([]),pagination: fromJS({ total: 0, pageSize: 8, current: 1}),
             linkModalVisible:false, linkModalInstanceId:0,
-            uploadModalVisible:false,
         }
     }
     componentDidMount() {

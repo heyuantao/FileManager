@@ -5,6 +5,7 @@ import moment from 'moment';
 import AppPageHeader from "../componments/app_page_header";
 import AppPageFooter from "../componments/app_page_footer";
 import Settings from "../../settings";
+import LinkModal from "./link_modal";
 
 const { Content } = Layout;
 const req = Settings.request;
@@ -17,9 +18,9 @@ class HomePage extends React.Component {
             formData: fromJS({}),
             formFieldValidateInfo: "",
             fetching: false,
-            pagination: fromJS({ total: 0, pageSize: 8, current: 1}),
-            tableData: fromJS([]),
-            expendRowKeys:fromJS([]),
+            tableData: fromJS([]), pagination: fromJS({ total: 0, pageSize: 10, current: 1}),
+            linkModalVisible:false, linkModalInstanceId:0,
+            //expendRowKeys:fromJS([]),
         }
     }
     componentDidMount() {
@@ -35,13 +36,19 @@ class HomePage extends React.Component {
         }
         return 1;
     }
+    handleLinkModalClose =()=>{
+        this.setState({linkModalVisible:false,linkModalInstanceId:0});
+    }
+    handleLinkClick = (id,key)=>{
+        this.setState({linkModalVisible:true,linkModalInstanceId:id});
+    }
     handleTableChange(pagination, filters, sorter){
         let newPagination=fromJS(pagination)
         this.setState({pagination:newPagination},()=>{this.fetchTableListData()})
     }
     fetchTableListData() {
-        const formData = this.state.formData;
-        const params = formData.toJS();
+        //const formData = this.state.formData;
+        const params = this.state.pagination.merge(this.state.formData).toJS();
         const apiURL = fileAPIURL;
         this.setState({fetching:true});
 
@@ -49,8 +56,8 @@ class HomePage extends React.Component {
             const tableData = fromJS(request.data.items);
             const pagination = fromJS(request.data.pagination);
             this.setState({tableData:tableData,pagination:pagination,fetching:false});
-            let expendRowKeys=tableData.map((item)=>(item.get("id")));
-            this.setState({expendRowKeys:expendRowKeys});
+            //let expendRowKeys=tableData.map((item)=>(item.get("id")));
+            //this.setState({expendRowKeys:expendRowKeys});
         }).catch((error)=>{
             this.setState({fetching:false});
         })
@@ -76,7 +83,6 @@ class HomePage extends React.Component {
     }
     tableColumnFormat(){
         const tableColumn = [
-            { title: "序号", dataIndex: "id", key: "id" },
             { title: "文件名", dataIndex: "filename", key: "filename" },
             { title: "更新日期", key: "uploaddate",
                 render: (text, record) => (
@@ -89,7 +95,7 @@ class HomePage extends React.Component {
             { title: "下载链接",  key: "url",
                 render: (text, record) => (
                     <div>
-                        <a href={record.url} target="_blank">下载</a>
+                        <a onClick={(event)=>{this.handleLinkClick(record.id,record.filename)}}>地址</a>
                     </div>
                 )
             }
@@ -117,17 +123,17 @@ class HomePage extends React.Component {
             <Layout className="layout">
                 <AppPageHeader></AppPageHeader>
                 <Content style={{background: '#fff',minHeight: "850px", padding: 10 }}>
-
                     <Row type="flex" justify="space-around" align="middle" style={{marginTop:10}}>
                         <Col span={22}>
                             <Card title="文件列表" style={{marginTop:10}} extra={this.searchInFileList()}>
-                                <Table dataSource={this.state.tableData.toJS()} rowKey="id"
+                                <Table dataSource={this.state.tableData.toJS()} rowKey="id" pagination={this.state.pagination.toJS()}
                                     onChange={(pagination, filters, sorter)=>{this.handleTableChange(pagination, filters, sorter)}}
                                     columns={this.tableColumnFormat()}>
                                 </Table>
                             </Card>
                         </Col>
                     </Row>
+                    <LinkModal visible={this.state.linkModalVisible} instanceid={this.state.linkModalInstanceId} onOK={()=>{this.handleLinkModalClose()}}></LinkModal>
                 </Content>
                 <AppPageFooter></AppPageFooter>
             </Layout>
