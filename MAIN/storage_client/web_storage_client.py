@@ -171,9 +171,11 @@ class WebStorageClient:
 
 
     #生成文件下载链接
-    def get_download_url(self, key, realname=None, expire=datetime.now()+timedelta(minutes=120)):
+    def get_download_url(self, key, realname=None, expire=None):
         if realname == None:
             realname = key
+        if expire == None:
+            expire = datetime.now() + timedelta(minutes=120)
         #timestamp = str((datetime.now() + timedelta(minutes=120)).timestamp())
         timestamp = str(expire.timestamp())
         secret = self.token
