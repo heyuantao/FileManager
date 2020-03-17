@@ -34,10 +34,10 @@ class FileEdit extends React.Component {
     fetchData(){
         this.getUploadSizeLimit();
         const url = fileAPIURL+this.props.instanceId+"/";
-        console.log(url);
+        //console.log(url);
         req.get(url,{}).then((res)=>{
             const data = res.data;
-            console.log(data);
+            //console.log(data);
             this.setState({formData:fromJS((data))});
         }).catch((err)=>{
             message.error('获取文件信息失败')

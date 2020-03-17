@@ -6,6 +6,9 @@ from MAIN.exceptions import MessageException
 from MAIN.utils import Singleton
 from django.conf import settings
 from .web_storage_client import WebStorageClient,WebStorageClientStatus
+import logging
+
+logger = logging.getLogger(__name__)
 
 HOST = settings.LARGE_STORAGE_SETTINGS.get('SITE_URL')
 TOKEN = settings.LARGE_STORAGE_SETTINGS.get('SITE_TOKEN')
@@ -18,14 +21,19 @@ class LargeFileStorage:
     def list(self):
         r,s = self.client.list()
         if s != WebStorageClientStatus.SUCCESS:
-            raise MessageException('Error in get file list in LargeFileStorage.list() ')
+            logger.error('Can not list key ! LargeFileStorage.list() ')
+            raise MessageException('网络或软件出现异常')
         #r 是文件列表
         return r
 
     def delete(self,key):
         s = self.client.delete(key)
-        #if s != WebStorageClientStatus.SUCCESS:
-        #    raise MessageException('Error in delete file list in LargeFileStorage.delete() ')
+        if s == WebStorageClientStatus.KEY_NOTEXIST:
+            logger.error('Delete key \"{}\" which is not exist ! LargeFileStorage.delete() '.format(key))
+            return
+        if s != WebStorageClientStatus.SUCCESS:
+            logger.critical('Unknow error happen in delete key \"{}\" ! LargeFileStorage.delete() '.format(key))
+            raise MessageException('该条目不能删除')
 
     def get_download_url(self,key, realname=None, expire=None):
         if realname == None:
@@ -36,11 +44,13 @@ class LargeFileStorage:
         return link
 
     def create_upload_task(self, key, size_limit=-1):
-        r,s =self.client.create_upload_task(key,size_limit=size_limit)
+        r,s =self.client.create_upload_task(key,size_limit=size_limit)  #第一次上传授权信息的生成，只有当key有重复时才可能发生"KEY_OCCUPIED"的错误
         if s == WebStorageClientStatus.KEY_OCCUPIED:
-            raise MessageException('Key has exist in WebStorage LargeFileStorage.create_upload_task() ')
+            logger.error('Key \"{}\" exist ! LargeFileStorage.create_upload_task() '.format(key))
+            raise MessageException('上传文件失败')
         if (s != WebStorageClientStatus.KEY_OCCUPIED) and (s!= WebStorageClientStatus.SUCCESS):
-            raise MessageException('Error in delete file list in LargeFileStorage.create_upload_task() ')
+            logger.critical('Unknow error happen in create upload task ! LargeFileStorage.create_upload_task() '.format(key))
+            raise MessageException('网络或软件出现异常')
         return r
 
     def random_key_prefix(self,stringLength=6):

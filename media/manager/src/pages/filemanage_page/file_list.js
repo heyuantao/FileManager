@@ -94,7 +94,7 @@ class FileList extends React.Component {
             { title: "更新日期", key: "uploaddate",
                 render: (text, record) => (
                     <div>
-                        {moment(record.uploaddate).format('YYYY-MM-DD HH:mm:ss')}
+                        {moment(record.uploaddate).format('YYYY-MM-DD HH:mm')}
                     </div>
                 )
             },
