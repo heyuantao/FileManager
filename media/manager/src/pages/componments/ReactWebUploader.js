@@ -8,9 +8,9 @@ class ReactWebUploader{
         this.clip_upload_data_url       = 'http://webstorage.heyuantao.cn/api/upload/'
         this.clip_upload_success_url    = 'http://webstorage.heyuantao.cn/api/upload/success/'
     }
-    //开始上传之前调用
+    //开始上传之前调用,返回ReactWebUploader本身
     // 参数说明：file为html5的文件对象;key为目标存储生成的key,也是上传后的文件名;task时服务器发送的上传编号;key和task都为字符型，用于上传时验证授权信息
-    upload(file,key,task){
+    create(file,key,task){
         this.key = key;
         this.task = task;
         const _this = this;
@@ -22,6 +22,7 @@ class ReactWebUploader{
         const wuFile = new WebUploader.File(new WebUploader.Lib.File(WebUploader.guid('rt_'),file));
         webuploader.addFiles(wuFile);
         this._webuploader = webuploader;
+        return this;
     }
     //三个为回调函数:
     // onSuccess用于上传成功时调用,参数为对于文件的key；
@@ -60,9 +61,21 @@ class ReactWebUploader{
     unscribe(){
         const webuploader = this._webuploader;
         webuploader.destroy();
+        this._webuploader = null;
     }
 }
 
-let reactWebUploader = new ReactWebUploader()
+const isUploadFileExceedSizeLimit =(file,sizeLimit)=>{
+    if(sizeLimit===-1){
+        return false;
+    }else if(file.size < sizeLimit){
+        return false;
+    }else{
+        return true;
+    }
+}
 
-export default reactWebUploader
+//以单例模式进行创建
+let ReactFileUploader = new ReactWebUploader()
+
+export {ReactFileUploader,isUploadFileExceedSizeLimit}

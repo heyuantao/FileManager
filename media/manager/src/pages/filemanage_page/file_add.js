@@ -1,10 +1,8 @@
 import React from "react";
-import {Link} from "react-router";
 import {Row, Col, Icon, Form, Input, Button, Alert, message, Upload, Radio} from 'antd';
 import { fromJS } from "immutable";
-import axios from 'axios';
 import Settings from "../../settings";
-import reactWebUploader from "../componments/ReactWebUploader";
+import {ReactFileUploader, isUploadFileExceedSizeLimit} from "../componments/ReactWebUploader";
 
 const FormItem = Form.Item;
 
@@ -13,24 +11,49 @@ const fileAPIURL = Settings.fileAPIURL;
 const uploadTaskAPIURL = Settings.uploadTaskAPIURL;
 
 class FileAdd extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
-            formData: fromJS({browserable:true}),formFieldValidateInfo: "",fetching: false,
+            formData: fromJS({browserable:true}),formFieldValidateInfo: "",fetching: false, editable: false,
             sizeLimit:0,
-            editable: false, mediaFileList: [], mediaUploading: false, mediaPercent: 0, mediaUrl:"",
+            mediaFileList: [], mediaUploading: false, mediaPercent: 0, mediaUrl:"",
         }
     }
+
     componentDidMount(){
         this.fetchData()
     }
+
     componentWillUnmount() {
-        if(this._reactWebUploader!==null){
-            this._reactWebUploader.unscribe();
+        if(this._fileUploader!==null){
+            this._fileUploader.unscribe();
         }
     }
+
     fetchData(){
+        this.getUploadSizeLimit();
     }
+
+    getUploadSizeLimit =()=>{
+        req.get(uploadTaskAPIURL,{}).then((res)=>{
+            const sizeLimit = res.data.size;
+            this.setState({sizeLimit:sizeLimit});
+        }).catch((err)=>{
+            message.error('获取文件上传大小上限失败');
+        })
+    }
+
+    isUploadFileExceedSizeLimit =(file,sizeLimit)=>{
+        if(sizeLimit===-1){
+            return false;
+        }else if(file.size > this.props.sizeLimit){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     handleFieldChange(value, field) {
         let dict = {}; dict[field] = value;
         let change = fromJS(dict);
@@ -38,7 +61,6 @@ class FileAdd extends React.Component {
     }
 
     validateForm() {
-        console.log(this.state.formData.toJS());
         let formData = this.state.formData;
         this.setState({ formFieldValidateInfo: "" });
         if ( !formData.get("filename") ) {
@@ -50,12 +72,11 @@ class FileAdd extends React.Component {
         return 1;
     }
 
-    onReactWebUploaderSuccess =(key)=>{
-        console.log("上传成功");
-        if(this._reactWebUploader!==null){
-            this._reactWebUploader.unscribe();
+    onFileUploaderSuccess =(key)=>{
+        if(this._fileUploader!==null){
+            this._fileUploader.unscribe();
         }
-        this._reactWebUploader=null;
+        this._fileUploader=null;
 
         this.setState({mediaUploading:false,mediaPercent: 0, mediaFileList: []});
         const formData = this.state.formData.merge({key:key});
@@ -64,34 +85,42 @@ class FileAdd extends React.Component {
             this.props.close();
         }).catch((error)=>{
             message.error('保存记录失败');
+        }).finally(()=>{
+            this.setState({mediaUploading:true});
         })
-        this.setState({mediaUploading:true});
     }
-    onReactWebUploaderError =(key)=>{
-        if(this._reactWebUploader!==null){
-            this._reactWebUploader.unscribe();
+
+    onFileUploaderError =(key)=>{
+        if(this._fileUploader!==null){
+            this._fileUploader.unscribe();
         }
-        this._reactWebUploader=null;
+        this._fileUploader=null;
         this.setState({mediaUploading:true});
         message.error('上传失败')
     }
-    onReactWebUploaderNext =(percent)=>{
+
+    onFileUploaderNext =(percent)=>{
         this.setState({mediaPercent:percent});
     }
-    uploadFile =(file,key,task)=>{
-        reactWebUploader.upload(file,key,task);
-        this._reactWebUploader= reactWebUploader;
-        reactWebUploader.scribe(this.onReactWebUploaderSuccess,this.onReactWebUploaderError,this.onReactWebUploaderNext);
 
+    uploadFile =(file,key,task)=>{
+        const fileUploader = ReactFileUploader.create(file,key,task);
+        this._fileUploader= fileUploader;
+        this._fileUploader.scribe(this.onFileUploaderSuccess,this.onFileUploaderError,this.onFileUploaderNext);
     }
 
-    handleUploadClick =()=>{
+    handleUploadButtonClick =()=>{
         let file = null;
         if(this.state.mediaFileList.length===0){
             message.error('未选择文件');
             return;
         }
         file = this.state.mediaFileList[0];
+        if(isUploadFileExceedSizeLimit(file,this.state.sizeLimit)===true){
+            const sizeInMB = Math.floor(this.state.sizeLimit/(1024*1024));
+            message.error('上传的文件不能超过'+sizeInMB+"MB");
+            return;
+        }
         this.setState({mediaUploading:true});
         req.post(uploadTaskAPIURL,{'key':file.name}).then((res)=>{
             const task = res.data.task;
@@ -148,7 +177,7 @@ class FileAdd extends React.Component {
                                 </Radio.Group>
                             </Form.Item>
                             <FormItem hasFeedback  {...tailFormItemLayout}>
-                                <Button type="primary" onClick={this.handleUploadClick} disabled={this.state.formFieldValidateInfo==="" ? false:true}
+                                <Button type="primary" onClick={this.handleUploadButtonClick} disabled={this.state.formFieldValidateInfo==="" ? false:true}
                                         loading={mediaUploading} style={{ marginTop: 16,marginRight:20}} >
                                     {mediaUploading ? '上传中: '+mediaPercent+"%" : '上传'}
                                 </Button>
