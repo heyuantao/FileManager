@@ -121,6 +121,7 @@ class FileAdd extends React.Component {
             message.error('上传的文件不能超过'+sizeInMB+"MB");
             return;
         }
+        this.setState({formData:this.state.formData.merge({filesize:file.size})});
         this.setState({mediaUploading:true});
         req.post(uploadTaskAPIURL,{'key':file.name}).then((res)=>{
             const task = res.data.task;
