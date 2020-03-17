@@ -33,7 +33,7 @@ class FileList extends React.Component {
         return 1;
     }
     handleTableChange(pagination, filters, sorter){
-        console.log(pagination);
+        //console.log(pagination);
         let newPagination=fromJS(pagination)
         this.setState({pagination:newPagination},()=>{this.fetchTableListData()})
     }
