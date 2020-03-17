@@ -6,7 +6,7 @@ const { Footer} = Layout;
 export default class AppPageFooter extends React.PureComponent {
     render() {
         return (
-                <Footer style={{ textAlign:"center",padding:"20px"}}>
+                <Footer style={{ textAlign:"center",padding:"10px"}}>
                     数据平台
                 </Footer>
         )
