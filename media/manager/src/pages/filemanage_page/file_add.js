@@ -26,6 +26,7 @@ class FileAdd extends React.Component {
     }
 
     componentWillUnmount() {
+        console.log(this._fileUploader);
         if(this._fileUploader!==null){
             this._fileUploader.unscribe();
         }
