@@ -94,16 +94,16 @@ class FileList extends React.Component {
             { title: "更新日期", key: "uploaddate",
                 render: (text, record) => (
                     <div>
-                        {moment(record.uploaddate).format('YYYY MMMM Do  h:mm')}
+                        {moment(record.uploaddate).format('YYYY-MM-DD HH:mm:ss')}
                     </div>
                 )
             },
-            { title: "文件大小", dataIndex: "filesize", key: "filesize" },
+            { title: "文件大小", dataIndex: "filesizedisplay", key: "filesizedisplay" },
             { title: "可浏览", key: "browserable",
                 render: (text,record) =>(
                     <div>
-                        { (record.browserable===true)&&<span>普通用户可见</span>}
-                        { (record.browserable===false)&&<span>仅管理员可见</span>}
+                        { (record.browserable===true)&&<span>公共</span>}
+                        { (record.browserable===false)&&<span>私有</span>}
                     </div>
                 )
             },
@@ -113,6 +113,13 @@ class FileList extends React.Component {
                         <a onClick={(event)=>{this.handleLinkClick(record.id,record.filename)}}>地址</a>
                     </div>
                 )
+            },
+            {title:'编辑',  key:'edit',
+                render: (text, record) => (
+                    <div>
+                        <a onClick={(event)=>{this.props.changeModeAndInstanceId('edit',record.id)}}>编辑</a>
+                    </div>
+                ),
             },
             {title:'操作',  key:'action',
                 render: (text, record) => (
@@ -143,7 +150,7 @@ class FileList extends React.Component {
                             <Form.Item style={{float:"right"}}>
                                 <Button onClick={()=>{this.handleSearchSubmit()}} type="primary" style={{marginRight:"10px"}}>查找</Button>
                                 <Button onClick={()=>{this.handleSearchClear()}} type="default" style={{marginRight:"10px"}}>清空</Button>
-                                <Button onClick={()=>{this.props.close()}} type="default">文件上传</Button>
+                                <Button onClick={()=>{this.props.changeModeAndInstanceId('add')}} type="default">文件上传</Button>
                             </Form.Item>
                         </Form>
                     </Col>

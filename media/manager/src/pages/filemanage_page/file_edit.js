@@ -10,7 +10,7 @@ const req = Settings.request
 const fileAPIURL = Settings.fileAPIURL;
 const uploadTaskAPIURL = Settings.uploadTaskAPIURL;
 
-class FileAdd extends React.Component {
+class FileEdit extends React.Component {
 
     constructor(props) {
         super(props);
@@ -33,6 +33,15 @@ class FileAdd extends React.Component {
 
     fetchData(){
         this.getUploadSizeLimit();
+        const url = fileAPIURL+this.props.instanceId+"/";
+        console.log(url);
+        req.get(url,{}).then((res)=>{
+            const data = res.data;
+            console.log(data);
+            this.setState({formData:fromJS((data))});
+        }).catch((err)=>{
+            message.error('获取文件信息失败')
+        })
     }
 
     getUploadSizeLimit =()=>{
@@ -66,9 +75,9 @@ class FileAdd extends React.Component {
         if ( !formData.get("filename") ) {
             this.setState({ formFieldValidateInfo: "请输入文件名 ！" }); return -1;
         }
-        if( this.state.mediaFileList.length === 0 ){
-            this.setState({ formFieldValidateInfo: "请选择文件 ！" }); return -1;
-        }
+        //if( this.state.mediaFileList.length === 0 ){
+        //    this.setState({ formFieldValidateInfo: "请选择文件 ！" }); return -1;
+        //}
         return 1;
     }
 
@@ -77,12 +86,12 @@ class FileAdd extends React.Component {
             this._fileUploader.unscribe();
         }
         this._fileUploader=null;
-
         this.setState({mediaUploading:false,mediaPercent: 0, mediaFileList: []});
         const formData = this.state.formData.merge({key:key});
-        req.post(fileAPIURL,formData.toJS()).then(()=>{
+        const url = fileAPIURL+this.props.instanceId+"/";
+        req.put(url,formData.toJS()).then(()=>{
             message.success('保存记录成功');
-            this.props.changeModeAndInstanceId('list');
+            this.props.changeModeAndInstanceId("list");
         }).catch((error)=>{
             message.error('保存记录失败');
         }).finally(()=>{
@@ -111,8 +120,9 @@ class FileAdd extends React.Component {
 
     handleUploadButtonClick =()=>{
         let file = null;
-        if(this.state.mediaFileList.length===0){
-            message.error('未选择文件');
+        if(this.state.mediaFileList.length===0){    //如果用户不上传文件，则直接调用上传成功的函数
+            const key = this.state.formData.get('key');
+            this.onFileUploaderSuccess(key);
             return;
         }
         file = this.state.mediaFileList[0];
@@ -153,7 +163,7 @@ class FileAdd extends React.Component {
         return (
             <div>
                 <Row type="flex" justify="space-between" align="middle" style={{marginTop:10}}>
-                    <Col><h2>添加文件</h2></Col>
+                    <Col><h2>文件编辑</h2></Col>
                 </Row>
                 <Row type="flex" justify="space-around" align="middle" style={{marginTop:60}}>
                     <Col span={12} >
@@ -198,4 +208,4 @@ class FileAdd extends React.Component {
     }
 }
 
-export default FileAdd
+export default FileEdit

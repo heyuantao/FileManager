@@ -91,7 +91,7 @@ class HomePage extends React.Component {
                     </div>
                 )
             },
-            { title: "文件大小", dataIndex: "filesize", key: "filesize" },
+            { title: "文件大小", dataIndex: "filesizedisplay", key: "filesizedisplay" },
             { title: "下载链接",  key: "url",
                 render: (text, record) => (
                     <div>

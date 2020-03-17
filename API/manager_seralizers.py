@@ -29,14 +29,14 @@ class ManagerFileSerializer(serializers.Serializer):
         filesize = int(ret['filesize'])
 
         if 0<= filesize <1024:
-            filesize = str(int(filesize))+"B"
+            filesizedisplay = str(int(filesize))+"B"
         elif 1024<=filesize<1024*1024:
-            filesize = str(int(filesize / (1024))) + "KB"
+            filesizedisplay = str(int(filesize / (1024))) + "KB"
         elif 1024*1024 <= filesize < 1024 * 1024 *1024:
-            filesize = str(int(filesize / (1024 * 1024))) + "MB"
+            filesizedisplay = str(int(filesize / (1024 * 1024))) + "MB"
         else:
-            filesize = str(int(filesize / (1024 * 1024 *1024))) + "GB"
-        ret['filesize']= filesize
+            filesizedisplay = str(int(filesize / (1024 * 1024 *1024))) + "GB"
+        ret['filesizedisplay']= filesizedisplay
 
         ret['url'] = LargeFileStorageInstance.get_download_url(key, realname=filename)
         return ret

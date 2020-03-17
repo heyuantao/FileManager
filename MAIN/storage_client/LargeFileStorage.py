@@ -24,8 +24,8 @@ class LargeFileStorage:
 
     def delete(self,key):
         s = self.client.delete(key)
-        if s != WebStorageClientStatus.SUCCESS:
-            raise MessageException('Error in delete file list in LargeFileStorage.delete() ')
+        #if s != WebStorageClientStatus.SUCCESS:
+        #    raise MessageException('Error in delete file list in LargeFileStorage.delete() ')
 
     def get_download_url(self,key, realname=None, expire=None):
         if realname == None:
