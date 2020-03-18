@@ -92,11 +92,11 @@ class FileEdit extends React.Component {
         req.put(url,formData.toJS()).then(()=>{
             message.success('保存记录成功');
             this.props.changeModeAndInstanceId("list");
+            this.setState({mediaUploading:true});
         }).catch((error)=>{
             message.error('保存记录失败');
-        }).finally(()=>{
             this.setState({mediaUploading:true});
-        })
+        });
     }
 
     onFileUploaderError =(key)=>{
