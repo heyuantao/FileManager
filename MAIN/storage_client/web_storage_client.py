@@ -76,7 +76,7 @@ class WebStorageClient:
     def _post(self, url, data_dict):
         headers = {'content-type': 'application/json','Authorization':'Token '+self.token}
         res = requests.post(url, json.dumps(data_dict), headers=headers)
-        json_object = json.loads(res.content)
+        json_object = json.loads(res.content.decode('utf-8'))
         return (json_object,res.status_code)
 
     #获取当前可下载的文件列表，和执行状态
