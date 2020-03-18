@@ -208,6 +208,32 @@ class WebStorageClient:
         download_url = "{0}{1}?key={2}&realname={3}&timestamp={4}&sign={5}".format(site_url, api_url, key, realname,timestamp, sign)
         return download_url
 
+    #生成文件下载链接
+    def get_download_command_use_with_wget(self, key, realname=None, expire=None):
+        if realname == None:
+            realname = key
+        if expire == None:
+            expire = datetime.now() + timedelta(minutes=120)
+        #timestamp = str((datetime.now() + timedelta(minutes=120)).timestamp())
+        timestamp = str(expire.timestamp())
+        secret = self.token
+        sign = downloadkeycrpyto.sign(key, realname, timestamp, secret)
+
+        origin_realname = realname
+        print(realname)
+        print(key)
+        ###把原始字符转换为URL安全的字符###
+        key = downloadkeycrpyto.stringToUrlSafeString(key)
+        realname = downloadkeycrpyto.stringToUrlSafeString(realname)
+        timestamp = downloadkeycrpyto.stringToUrlSafeString(timestamp)
+        sign = downloadkeycrpyto.stringToUrlSafeString(sign)
+        ################################
+
+        site_url = self.endpoint
+        api_url = "/file/content"
+        wget_download_command = "wget -O {6} {0}{1}?key={2}\&realname={3}\&timestamp={4}\&sign={5}".format(site_url, api_url, key, realname,timestamp, sign, origin_realname)
+        return wget_download_command
+
     #下载文件,将文件下载到指定目录，返回值是元组(link_url,执行状态)
     def download_to_dir(self,key, dir="/tmp/"):
         try:

@@ -43,6 +43,14 @@ class LargeFileStorage:
         link = self.client.get_download_url(key,realname,expire)
         return link
 
+    def get_download_command_use_with_wget(self,key, realname=None, expire=None):
+        if realname == None:
+            realname = key
+        if expire == None:
+            expire = datetime.now() + timedelta(minutes=120)
+        command_with_wget = self.client.get_download_command_use_with_wget(key,realname,expire)
+        return command_with_wget
+
     def create_upload_task(self, key, size_limit=-1):
         r,s =self.client.create_upload_task(key,size_limit=size_limit)  #第一次上传授权信息的生成，只有当key有重复时才可能发生"KEY_OCCUPIED"的错误
         if s == WebStorageClientStatus.KEY_OCCUPIED:

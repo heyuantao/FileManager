@@ -1,8 +1,10 @@
 import React from "react";
-import {Table, Popconfirm, message, Button, Modal } from 'antd';
+import {Table, Popconfirm, message, Button, Modal, Collapse  } from 'antd';
 import { fromJS } from "immutable";
 import { connect } from "react-redux";
 import Settings from "../../settings";
+
+const { Panel } = Collapse;
 
 const req = Settings.request;
 const fileAPIURL = Settings.fileAPIURL;
@@ -11,7 +13,7 @@ class LinkModal extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            url:"",
+            instanceData:fromJS({}),
         }
     }
     componentWillReceiveProps(props) {
@@ -19,14 +21,14 @@ class LinkModal extends React.Component{
         const newProps = props;
         const id = newProps.instanceid;
         if(id!==0){
-            this.fetchDownloadUrl(id);
+            this.fetchInstanceData(id);
         }
     }
-    fetchDownloadUrl = (id)=>{
+    fetchInstanceData = (id)=>{
         const apiURL = fileAPIURL+id+"/";
         req.get(apiURL,{}).then((res)=>{
-            const url = res.data.url;
-            this.setState({url:url});
+            const data = fromJS(res.data);
+            this.setState({instanceData:data});
         }).catch((err)=>{
 
         })
@@ -42,12 +44,29 @@ class LinkModal extends React.Component{
         )
 
     }
+
+    pannelOneHeader =()=>{
+        return(
+            <div>
+                <div style={{display:"inline"}}>浏览器下载链接</div>
+                <a href={this.state.url} target="_blank" style={{marginLeft:"10px",display:"inline"}}>下载</a>
+            </div>
+
+        )
+    }
     render() {
         return(
             <div>
-                <Modal title="文件下载" visible={this.props.visible} closable={false} footer={this.footerContent()}>
-                    <p>{this.state.url}</p>
-                    <a href={this.state.url} target="_blank">下载</a>
+                <Modal title="文件下载" visible={this.props.visible} closable={false} footer={this.footerContent()} width="800px">
+                    <Collapse defaultActiveKey={['1','2']} >
+                        <Panel header={this.pannelOneHeader()} key="1">
+                            <p>{this.state.instanceData.get('url')}</p>
+
+                        </Panel>
+                        <Panel header="命令行下载链接" key="2">
+                            <p>{this.state.instanceData.get('wget_download_command')}</p>
+                        </Panel>
+                    </Collapse>
                 </Modal>
             </div>
         )
