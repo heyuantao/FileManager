@@ -6,6 +6,7 @@ import requests
 import json
 import urllib
 import string
+import base64
 import os
 import traceback
 import logging
@@ -51,6 +52,15 @@ class DownloadKeyCrypto:
                 return True
             else:
                 return False
+
+    #在url传递时，字符串可能还有特殊字符，用该方式进行url的编解码
+    def stringToUrlSafeString(self,originString):
+        safeString = base64.b64encode(originString.encode("utf-8")).decode("utf-8")
+        return safeString
+
+    def urlSafeStringToString(self,safeString):
+        originString = base64.b64decode(safeString.encode("utf-8")).decode("utf-8")
+        return originString
 
 downloadkeycrpyto = DownloadKeyCrypto()
 
@@ -180,6 +190,14 @@ class WebStorageClient:
         timestamp = str(expire.timestamp())
         secret = self.token
         sign = downloadkeycrpyto.sign(key, realname, timestamp, secret)
+
+        ###把原始字符转换为URL安全的字符###
+        key = downloadkeycrpyto.stringToUrlSafeString(key)
+        realname = downloadkeycrpyto.stringToUrlSafeString(realname)
+        timestamp = downloadkeycrpyto.stringToUrlSafeString(timestamp)
+        sign = downloadkeycrpyto.stringToUrlSafeString(sign)
+        ################################
+
         site_url = self.endpoint
         api_url = "/file/content"
         download_url = "{0}{1}?key={2}&realname={3}&timestamp={4}&sign={5}".format(site_url, api_url, key, realname,timestamp, sign)
