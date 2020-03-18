@@ -45,23 +45,14 @@ class LinkModal extends React.Component{
 
     }
 
-    pannelOneHeader =()=>{
-        return(
-            <div>
-                <div style={{display:"inline"}}>浏览器下载链接</div>
-                <a href={this.state.url} target="_blank" style={{marginLeft:"10px",display:"inline"}}>下载</a>
-            </div>
-
-        )
-    }
     render() {
         return(
             <div>
                 <Modal title="文件下载" visible={this.props.visible} closable={false} footer={this.footerContent()} width="800px">
                     <Collapse defaultActiveKey={['1','2']} >
-                        <Panel header={this.pannelOneHeader()} key="1">
+                        <Panel header="浏览器下载链接" key="1">
                             <p>{this.state.instanceData.get('url')}</p>
-
+                            <a href={this.state.instanceData.get('url')} target="_blank">下载</a>
                         </Panel>
                         <Panel header="命令行下载链接" key="2">
                             <p>{this.state.instanceData.get('wget_download_command')}</p>
