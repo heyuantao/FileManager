@@ -131,6 +131,10 @@ class FileEdit extends React.Component {
             message.error('上传的文件不能超过'+sizeInMB+"MB");
             return;
         }
+        if(file.size===0){
+            message.error('该文件大小为零');
+            return;
+        }
         this.setState({formData:this.state.formData.merge({filesize:file.size})});
         this.setState({mediaUploading:true});
         req.post(uploadTaskAPIURL,{'key':file.name}).then((res)=>{
