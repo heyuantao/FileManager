@@ -67,8 +67,19 @@ class FileList extends React.Component {
         const formData = fromJS({});
         const tableData = fromJS([]);
         this.setState({formData:formData,tableData:tableData},()=>{
-            this.fetchTableListData();
+            this.fetchTableListData({tableData:tableData});
         });
+    }
+    handleInputChange(value){
+        if(value!==''){
+            this.handleFormFieldChange(value, "search");
+        }else{
+            const dict = {'search':value};
+            const change = fromJS(dict);
+            this.setState({ formData: this.state.formData.merge(change) },()=>{
+                this.fetchTableListData();
+            });
+        }
     }
     handleDeleteTableItem = (id,key)=>{
         const apiURL = fileAPIURL+id+"/";
@@ -144,12 +155,12 @@ class FileList extends React.Component {
                     <Col>
                         <Form layout="inline">
                             <Form.Item label={"文件名"} >
-                                <Input value={formData.get("search")} onChange={(e)=>{this.handleFormFieldChange(e.target.value,"search")}}
-                                       placeholder="winrar" />
+                                <Input value={formData.get("search")} onChange={(e)=>{this.handleInputChange(e.target.value)}}
+                                        onPressEnter={()=>{this.handleSearchSubmit()}} allowClear placeholder="winrar" />
                             </Form.Item>
                             <Form.Item style={{float:"right"}}>
                                 <Button onClick={()=>{this.handleSearchSubmit()}} type="primary" style={{marginRight:"10px"}}>查找</Button>
-                                <Button onClick={()=>{this.handleSearchClear()}} type="default" style={{marginRight:"10px"}}>清空</Button>
+                                <Button onClick={()=>{this.fetchTableListData()}} type="default" style={{marginRight:"10px"}}>刷新</Button>
                                 <Button onClick={()=>{this.props.changeModeAndInstanceId('add')}} type="default">文件上传</Button>
                             </Form.Item>
                         </Form>

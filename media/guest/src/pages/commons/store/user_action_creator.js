@@ -5,8 +5,8 @@ import Settings from "../../../settings";
 const req = Settings.request;
 const userAPIURL = Settings.userAPIURL;
 const loginAPIURL = Settings.loginAPIURL;
-const captchaAPIURL = Settings.captchaAPIURL;
-const autoLogin = Settings.autoLogin;
+//const captchaAPIURL = Settings.captchaAPIURL;
+//const autoLogin = Settings.autoLogin;
 
 export const getUser = () => {
     return (dispatch)=>{

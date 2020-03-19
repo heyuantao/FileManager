@@ -68,6 +68,17 @@ class HomePage extends React.Component {
         let change = fromJS(dict);
         this.setState({ formData: this.state.formData.merge(change) });
     }
+    handleInputChange(value){
+        if(value!==''){
+            this.handleFormFieldChange(value, "search");
+        }else{
+            const dict = {'search':value};
+            const change = fromJS(dict);
+            this.setState({ formData: this.state.formData.merge(change) },()=>{
+                this.fetchTableListData();
+            });
+        }
+    }
     handleSearchSubmit(){
         if(this.validateFormField()<0){
             return;
@@ -107,8 +118,8 @@ class HomePage extends React.Component {
         return(
             <Form layout="inline">
                 <Form.Item label={"文件名"} >
-                    <Input value={formData.get("search")} onChange={(e)=>{this.handleFormFieldChange(e.target.value,"search")}}
-                            placeholder="winrar" />
+                    <Input value={formData.get("search")} onChange={(e)=>{this.handleInputChange(e.target.value)}}
+                            onPressEnter={()=>{this.handleSearchSubmit()}} allowClear placeholder="winrar" />
                 </Form.Item>
                 <Form.Item style={{float:"right"}}>
                     <Button onClick={()=>{this.handleSearchSubmit()}} type="primary" style={{marginRight:"10px"}}>查找</Button>
