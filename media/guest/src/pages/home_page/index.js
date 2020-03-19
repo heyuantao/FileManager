@@ -72,9 +72,9 @@ class HomePage extends React.Component {
         if(value!==''){
             this.handleFormFieldChange(value, "search");
         }else{
-            const dict = {'search':value};
-            const change = fromJS(dict);
-            this.setState({ formData: this.state.formData.merge(change) },()=>{
+            const changeFormData = fromJS({'search':value});
+            const changePagination = fromJS({'current': 1})
+            this.setState({ formData: this.state.formData.merge(changeFormData),pagination:this.state.pagination.merge(changePagination) },()=>{
                 this.fetchTableListData();
             });
         }
@@ -83,7 +83,10 @@ class HomePage extends React.Component {
         if(this.validateFormField()<0){
             return;
         }
-        this.fetchTableListData();
+        const changePagination = fromJS({'current': 1})
+        this.setState({ pagination:this.state.pagination.merge(changePagination) },()=>{
+                this.fetchTableListData();
+        });
     }
     handleSearchClear(){
         const formData = fromJS({});
