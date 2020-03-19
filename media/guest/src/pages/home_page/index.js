@@ -123,7 +123,7 @@ class HomePage extends React.Component {
                 </Form.Item>
                 <Form.Item style={{float:"right"}}>
                     <Button onClick={()=>{this.handleSearchSubmit()}} type="primary" style={{marginRight:"10px"}}>查找</Button>
-                    <Button onClick={()=>{this.handleSearchClear()}} type="default">清空</Button>
+                    <Button onClick={()=>{this.handleSearchClear()}} type="default">刷新</Button>
                 </Form.Item>
             </Form>
         )
