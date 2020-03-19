@@ -86,14 +86,14 @@ class FileList extends React.Component {
     }
     handleDeleteTableItem = (id,key)=>{
         const apiURL = fileAPIURL+id+"/";
-        console.log(this.state.tableData.size);
+        //console.log(this.state.tableData.size);
         if(this.state.tableData.size==1){
             let current = this.state.pagination.get('current');
-            console.log(current);
+            //console.log(current);
             if(current>1){
                 current = current-1;
             }
-            console.log(current);
+            //console.log(current);
             const changePagination = fromJS({'current': current});
             this.setState({pagination:this.state.pagination.merge(changePagination)});
         }
