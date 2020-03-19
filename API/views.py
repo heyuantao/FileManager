@@ -79,8 +79,6 @@ class UserAPIView(APIView):  #This class handle user information retrive and upd
 
 
     def put(self, request, format=None):
-        return Response({"error_message": u"method not allow"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        '''
         user_instance = request.user
         if user_instance.is_authenticated():
             serializer = UserSerializer(user_instance, data=request.data)
@@ -91,4 +89,3 @@ class UserAPIView(APIView):  #This class handle user information retrive and upd
             response = Response({"redirect_url": reverse("guest")}, status=status.HTTP_302_FOUND)
             response['Cache-Control'] = 'no-cache'
             return response
-        '''
