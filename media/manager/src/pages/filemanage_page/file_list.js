@@ -88,7 +88,7 @@ class FileList extends React.Component {
         const apiURL = fileAPIURL+id+"/";
         console.log(this.state.tableData.size);
         if(this.state.tableData.size==1){
-            let current = this.state.tableData.get('current');
+            let current = this.state.pagination.get('current');
             console.log(current);
             if(current>1){
                 current = current-1;
