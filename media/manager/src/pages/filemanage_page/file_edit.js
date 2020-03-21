@@ -86,16 +86,16 @@ class FileEdit extends React.Component {
             this._fileUploader.unscribe();
         }
         this._fileUploader=null;
-        this.setState({mediaUploading:false,mediaPercent: 0, mediaFileList: []});
+        this.setState({mediaPercent: 0, mediaFileList: []});
         const formData = this.state.formData.merge({key:key});
         const url = fileAPIURL+this.props.instanceId+"/";
         req.put(url,formData.toJS()).then(()=>{
             message.success('保存记录成功');
             this.props.changeModeAndInstanceId("list");
-            this.setState({mediaUploading:true});
+            this.setState({mediaUploading:false});
         }).catch((error)=>{
             message.error('保存记录失败');
-            this.setState({mediaUploading:true});
+            this.setState({mediaUploading:false});
         });
     }
 
@@ -104,7 +104,7 @@ class FileEdit extends React.Component {
             this._fileUploader.unscribe();
         }
         this._fileUploader=null;
-        this.setState({mediaUploading:true});
+        this.setState({mediaUploading:false});
         message.error('上传失败')
     }
 
@@ -112,10 +112,19 @@ class FileEdit extends React.Component {
         this.setState({mediaPercent:percent});
     }
 
+    onFilePreUploadError =(msg)=>{
+        if((this._fileUploader)&&(this._fileUploader!==null)){
+            this._fileUploader.unscribe();
+        }
+        this._fileUploader=null;
+        this.setState({mediaUploading:false});
+        message.error(msg);
+    }
+
     uploadFile =(file,key,task)=>{
         const fileUploader = ReactFileUploader.create(file,key,task);
         this._fileUploader= fileUploader;
-        this._fileUploader.scribe(this.onFileUploaderSuccess,this.onFileUploaderError,this.onFileUploaderNext);
+        this._fileUploader.scribe(this.onFileUploaderSuccess,this.onFileUploaderError,this.onFileUploaderNext,this.onFilePreUploadError);
     }
 
     handleUploadButtonClick =()=>{
