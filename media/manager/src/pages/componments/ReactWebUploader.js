@@ -65,8 +65,6 @@ class ReactWebUploader{
         //开始进行文件上传,检查是否超过限制大小
         const data = {'task': _this.task, 'key':_this.key};
         axios.post(_this.task_info_url, data).then((res)=>{
-            console.log("size limit is :")
-            console.log(res.data)
             const size_limit = res.data.size;
             if(isUploadFileExceedSizeLimit(_this.file,size_limit)===true){
                 onPreUploadError('文件大小超过限制');
