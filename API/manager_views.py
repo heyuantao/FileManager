@@ -142,15 +142,16 @@ class ManagerFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIVi
 
 
 class ManagerFileUploadTaskAPIView(APIView):
+    size_limit = 10*1024*1024
+    #size_limit = -1
     def get(self,request):
-        #size = 1024*1024*10
-        size = -1
-        return Response({'size': size}, status=status.HTTP_200_OK)
+        return Response({'size': self.size_limit}, status=status.HTTP_200_OK)
+
     def post(self,request):
         try:
             key = request.data.get('key')  #key 是客户端传递过来的文件名
             key_with_prefix = LargeFileStorageInstance.random_key_prefix() + "_" + key
-            taskInstance = LargeFileStorageInstance.create_upload_task(key_with_prefix,size_limit=-1)
+            taskInstance = LargeFileStorageInstance.create_upload_task(key_with_prefix,size_limit=self.size_limit)
             return Response(taskInstance, status=status.HTTP_200_OK)
         except MessageException:
             logger.error(traceback.print_exc())
