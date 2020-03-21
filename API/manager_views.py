@@ -142,8 +142,8 @@ class ManagerFileRetriveUpdateDestoryAPIView(generics.RetrieveUpdateDestroyAPIVi
 
 
 class ManagerFileUploadTaskAPIView(APIView):
-    size_limit = 10*1024*1024
-    #size_limit = -1
+    #size_limit = 10*1024*1024
+    size_limit = -1
     def get(self,request):
         return Response({'size': self.size_limit}, status=status.HTTP_200_OK)
 
