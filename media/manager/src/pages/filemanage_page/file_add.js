@@ -126,7 +126,6 @@ class FileAdd extends React.Component {
             return;
         }
         file = this.state.mediaFileList[0];
-        /*
         if(isUploadFileExceedSizeLimit(file,this.state.sizeLimit)===true){
             const sizeInMB = Math.floor(this.state.sizeLimit/(1024*1024));
             message.error('上传的文件不能超过'+sizeInMB+"MB");
@@ -136,7 +135,6 @@ class FileAdd extends React.Component {
             message.error('该文件大小为零');
             return;
         }
-         */
         this.setState({formData:this.state.formData.merge({filesize:file.size})});
         this.setState({mediaUploading:true});
         req.post(uploadTaskAPIURL,{'key':file.name}).then((res)=>{
