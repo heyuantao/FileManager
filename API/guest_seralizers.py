@@ -39,8 +39,8 @@ class GuestFileSerializer(serializers.Serializer):
         
         key = ret['key']
         filename = ret['filename']
-        ret['url'] = LargeFileStorageInstance.get_download_url(key)
-        ret['wget_download_command'] = LargeFileStorageInstance.get_download_command_use_with_wget(key,filename)
+        ret['url'] = LargeFileStorageInstance.get_download_url(key,realname=filename)
+        ret['wget_download_command'] = LargeFileStorageInstance.get_download_command_use_with_wget(key,realname=filename)
         return ret
 
     def create(self, validated_data):
