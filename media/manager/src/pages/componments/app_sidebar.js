@@ -7,6 +7,8 @@ import * as LocationActionCreator from "../commons/store/location_indicator_acti
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
+import "./app_sidebar.css"
+
 class AppSideBar extends React.Component {
     constructor(props) {
         super(props);
