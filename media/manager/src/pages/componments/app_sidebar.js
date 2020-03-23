@@ -4,10 +4,10 @@ import { Icon, Layout, Menu } from "antd";
 import {connect} from "react-redux";
 import {fromJS} from "immutable";
 import * as LocationActionCreator from "../commons/store/location_indicator_action_creator";
+import "./app_sidebar.css"
+
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
-
-import "./app_sidebar.css"
 
 class AppSideBar extends React.Component {
     constructor(props) {
