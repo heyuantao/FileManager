@@ -25,6 +25,7 @@ class ReactUploader extends React.Component{
 
     componentWillUnmount() {
         if(this._uploader!==null){
+            this._uploader.reset();
             this._uploader.destroy();
         }
     }
@@ -41,6 +42,7 @@ class ReactUploader extends React.Component{
     uploadSuccessFinished =()=>{
         this.setState({mediaUploading:false,mediaPercent: 0, mediaFileList: []});
         if(this._uploader!==null){
+            this._uploader.reset();
             this._uploader.destroy();
         }
         message.success('上传成功');
@@ -49,6 +51,7 @@ class ReactUploader extends React.Component{
     uploadErrorFinished =()=>{
         this.setState({mediaUploading:false,mediaPercent: 0});
         if(this._uploader!==null){
+            this._uploader.reset();
             this._uploader.destroy();
         }
         message.error('上传失败')
@@ -121,11 +124,11 @@ class ReactUploader extends React.Component{
         })
     }
 
-    uploadFinished =()=>{
-        const uploader = this._uploader;
-        //uploader.reset();
-        this.setState({mediaFileList:[],mediaUploading:false});
-    }
+    //uploadFinished =()=>{
+    //    const uploader = this._uploader;
+    //    uploader.reset();
+    //    this.setState({mediaFileList:[],mediaUploading:false});
+    //}
 
     render() {
         const {mediaFileList,editable,mediaUploading,mediaPercent} = this.state;
