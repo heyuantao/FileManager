@@ -123,7 +123,7 @@ class ReactUploader extends React.Component{
 
     uploadFinished =()=>{
         const uploader = this._uploader;
-        uploader.reset();
+        //uploader.reset();
         this.setState({mediaFileList:[],mediaUploading:false});
     }
 
