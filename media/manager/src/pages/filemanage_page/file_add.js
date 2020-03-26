@@ -121,8 +121,9 @@ class FileAdd extends React.Component {
 
     cleanUploadFile =()=>{
         if((this._fileUploader)&&(this._fileUploader!==null)){
-            this._fileUploader.unscribe();
+            const fileUploader = this._fileUploader;
             this._fileUploader=null;
+            fileUploader.unscribe();
         }
     }
 
