@@ -26,9 +26,6 @@ class FileAdd extends React.Component {
     }
 
     componentWillUnmount() {
-        //if((this._fileUploader)&&(this._fileUploader!==null)){
-        //    this._fileUploader.unscribe();
-        //}
         this.cleanUploadFile();
     }
 
@@ -77,7 +74,7 @@ class FileAdd extends React.Component {
         //if((this._fileUploader)&&(this._fileUploader!==null)){
         //    this._fileUploader.unscribe();
         //}
-        this._fileUploader=null;
+        //this._fileUploader=null;
 
         //this.setState({mediaUploading:false,mediaPercent: 0, mediaFileList: []});
         this.setState({mediaPercent: 0, mediaFileList: []});
@@ -99,7 +96,6 @@ class FileAdd extends React.Component {
         //    this._fileUploader.unscribe();
         //}
         this.cleanUploadFile();
-        this._fileUploader=null;
         this.setState({mediaUploading:false});
         message.error('上传失败')
     }
@@ -113,7 +109,6 @@ class FileAdd extends React.Component {
         //    this._fileUploader.unscribe();
         //}
         this.cleanUploadFile();
-        this._fileUploader=null;
         this.setState({mediaUploading:false});
         message.error(msg);
     }
@@ -127,6 +122,7 @@ class FileAdd extends React.Component {
     cleanUploadFile =()=>{
         if((this._fileUploader)&&(this._fileUploader!==null)){
             this._fileUploader.unscribe();
+            this._fileUploader=null;
         }
     }
 

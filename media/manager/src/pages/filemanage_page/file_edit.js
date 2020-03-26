@@ -26,9 +26,7 @@ class FileEdit extends React.Component {
     }
 
     componentWillUnmount() {
-        if((this._fileUploader)&&(this._fileUploader!==null)){
-            this._fileUploader.unscribe();
-        }
+        this.cleanUploadFile();
     }
 
     fetchData(){
@@ -82,28 +80,23 @@ class FileEdit extends React.Component {
     }
 
     onFileUploaderSuccess =(key)=>{
-        if((this._fileUploader)&&(this._fileUploader!==null)){
-            this._fileUploader.unscribe();
-        }
-        this._fileUploader=null;
         this.setState({mediaPercent: 0, mediaFileList: []});
         const formData = this.state.formData.merge({key:key});
         const url = fileAPIURL+this.props.instanceId+"/";
         req.put(url,formData.toJS()).then(()=>{
             message.success('保存记录成功');
-            this.props.changeModeAndInstanceId("list");
+            this.cleanUploadFile();
             this.setState({mediaUploading:false});
+            this.props.changeModeAndInstanceId("list");
         }).catch((error)=>{
             message.error('保存记录失败');
             this.setState({mediaUploading:false});
+            this.cleanUploadFile();
         });
     }
 
     onFileUploaderError =(key)=>{
-        if((this._fileUploader)&&(this._fileUploader!==null)){
-            this._fileUploader.unscribe();
-        }
-        this._fileUploader=null;
+        this.cleanUploadFile()
         this.setState({mediaUploading:false});
         message.error('上传失败')
     }
@@ -113,10 +106,7 @@ class FileEdit extends React.Component {
     }
 
     onFilePreUploadError =(msg)=>{
-        if((this._fileUploader)&&(this._fileUploader!==null)){
-            this._fileUploader.unscribe();
-        }
-        this._fileUploader=null;
+        this.cleanUploadFile()
         this.setState({mediaUploading:false});
         message.error(msg);
     }
@@ -125,6 +115,13 @@ class FileEdit extends React.Component {
         const fileUploader = ReactFileUploader.create(file,key,task);
         this._fileUploader= fileUploader;
         this._fileUploader.scribe(this.onFileUploaderSuccess,this.onFileUploaderError,this.onFileUploaderNext,this.onFilePreUploadError);
+    }
+
+    cleanUploadFile =()=>{
+        if((this._fileUploader)&&(this._fileUploader!==null)){
+            this._fileUploader.unscribe();
+            this._fileUploader=null;
+        }
     }
 
     handleUploadButtonClick =()=>{
