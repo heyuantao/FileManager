@@ -78,13 +78,13 @@ class ReactWebUploader{
     }
     //文件上传完成后，手动调用该函数销毁所创建的webuploader对象
     unscribe(){
-        const webuploader = this._webuploader;
+        let webuploader = this._webuploader;
+        this._webuploader = null;
         if(webuploader!==null){
             webuploader.stop(true);
             webuploader.reset();
             webuploader.destroy();
         }
-        this._webuploader = null;
     }
 }
 
