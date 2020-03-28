@@ -85,7 +85,7 @@ class HomePage extends React.Component {
         }
         const changePagination = fromJS({'current': 1})
         this.setState({ pagination:this.state.pagination.merge(changePagination) },()=>{
-                this.fetchTableListData();
+            this.fetchTableListData();
         });
     }
     handleSearchClear(){
@@ -140,7 +140,7 @@ class HomePage extends React.Component {
                     <Row type="flex" justify="space-around" align="middle" style={{marginTop:10}}>
                         <Col span={22}>
                             <Card title="文件列表" style={{marginTop:10}} extra={this.searchInFileList()}>
-                                <Table dataSource={this.state.tableData.toJS()} rowKey="id" pagination={this.state.pagination.toJS()}
+                                <Table dataSource={this.state.tableData.toJS()} rowKey="id" pagination={this.state.pagination.toJS()}  loading={this.state.fetching}
                                     onChange={(pagination, filters, sorter)=>{this.handleTableChange(pagination, filters, sorter)}}
                                     columns={this.tableColumnFormat()}>
                                 </Table>
