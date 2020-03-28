@@ -97,10 +97,13 @@ class FileList extends React.Component {
             const changePagination = fromJS({'current': current});
             this.setState({pagination:this.state.pagination.merge(changePagination)});
         }
+
+        this.setState({fetching:true});
         req.delete(apiURL,{"key":key}).then((res)=>{
             message.success('Delete Success !');
             this.fetchTableListData();
         }).catch((err)=>{
+            this.setState({fetching:false});
             message.error('Delete Error !');
         })
     }
@@ -182,7 +185,7 @@ class FileList extends React.Component {
                 </Row>
                 <Row type="flex" justify="space-around" align="middle" style={{marginTop:10}}>
                     <Col span={24}>
-                        <Table dataSource={this.state.tableData.toJS()} rowKey="id" pagination={this.state.pagination.toJS()}
+                        <Table dataSource={this.state.tableData.toJS()} rowKey="id" pagination={this.state.pagination.toJS()} loading={this.state.fetching}
                                onChange={(pagination, filters, sorter)=>{this.handleTableChange(pagination, filters, sorter)}}
                                columns={this.tableColumnFormat()}>
                         </Table>
