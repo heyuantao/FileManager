@@ -39,7 +39,7 @@ class LargeFileStorage:
         if realname == None:
             realname = key
         if expire == None:
-            expire = datetime.now() + timedelta(minutes=120)
+            expire = datetime.now() + timedelta(hours=24) #timedelta(minutes=120)
         link = self.client.get_download_url(key,realname,expire)
         return link
 
@@ -47,7 +47,7 @@ class LargeFileStorage:
         if realname == None:
             realname = key
         if expire == None:
-            expire = datetime.now() + timedelta(minutes=120)
+            expire = datetime.now() + timedelta(hours=24) #timedelta(minutes=120)
         command_with_wget = self.client.get_download_command_use_with_wget(key,realname,expire)
         return command_with_wget
 
