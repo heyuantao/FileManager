@@ -10,6 +10,7 @@ xlrd==1.2.0
 xlutils==2.0.0
 pandas==0.20.3
 gunicorn==20.0.4
+gevent==1.4.0
 user-agents==1.1.0
 django-cors-headers==2.4.0
 schedule==0.6.0
