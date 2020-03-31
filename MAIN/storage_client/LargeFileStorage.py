@@ -5,7 +5,7 @@ import string
 from MAIN.exceptions import MessageException
 from MAIN.utils import Singleton
 from django.conf import settings
-from .web_storage_client import WebStorageClient,WebStorageClientStatus
+from .web_storage_client import WebStorageClientDefaultInstance,WebStorageClientStatus
 import logging
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,8 @@ TOKEN = settings.LARGE_STORAGE_SETTINGS.get('SITE_TOKEN')
 @Singleton
 class LargeFileStorage:
     def __init__(self):
-        self.client = WebStorageClient(endpoint=HOST,token=TOKEN)
+        self.client = WebStorageClientDefaultInstance
+        self.client.config(endpoint=HOST,token=TOKEN)
 
     def list(self):
         r,s = self.client.list()

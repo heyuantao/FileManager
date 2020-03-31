@@ -80,7 +80,10 @@ class WebStorageClientStatus(Enum):
 
 #请在引入该对象的类中使用单例模式
 class WebStorageClient:
-    def __init__(self, endpoint=None, token=""):
+    def __init__(self):
+        pass
+
+    def config(self, endpoint=None, token=""):
         self.token = token
         self.endpoint = endpoint
         self.list_file_api      = FILE_LIST_API
@@ -89,7 +92,7 @@ class WebStorageClient:
         self.file_task_api      = FILE_TASK_API
         #使用连接池来发送请求，否则的话可能由于tcp连接满时导致出现连接错误的现象
         self._req = requests.Session()
-        self._req.mount('http://', HTTPAdapter(pool_connections=2, pool_maxsize=2))
+        self._req.mount('http://', HTTPAdapter(pool_connections=2, pool_maxsize=2, max_retries=1))
 
     #进行post请求，传入的data为Python对象格式（字典或者列表），返回有两个值，其中json_object是返回值也是对象格式（字典或者列表），url为api接口的地址，不带域名和协议类型,例如'/api/file/list/'
     def _post(self, url, data_dict):
@@ -255,6 +258,8 @@ class WebStorageClient:
             status = WebStorageClientStatus.OTHER_ERROR
             return ("", WebStorageClientStatus.OTHER_ERROR)
 
+#默认的实例，是WebStorageClient的单例实现
+WebStorageClientDefaultInstance = WebStorageClient()
 
 
 def test_case1():
@@ -272,7 +277,6 @@ def test_case1():
 
     r, s = client.create_upload_task('bIOmQ_04_OpenStack HA  理论.zip')
     print('VALUE: {}\nSTATUS: {}'.format(r, s))
-
 
 def test_case2():
     client = WebStorageClient(token='UseMyWebStorageService',endpoint='http://webstorage.heyuantao.cn')
