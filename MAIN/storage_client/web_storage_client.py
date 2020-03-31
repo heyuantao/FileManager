@@ -2,6 +2,7 @@
 #该文件为WebStorage的客户端接口
 from enum import Enum
 from datetime import datetime,timedelta
+from requests.adapters import HTTPAdapter
 import requests
 import json
 import urllib
@@ -77,7 +78,7 @@ class WebStorageClientStatus(Enum):
     NETWORK_ERROR   = 5
     OTHER_ERROR     = 6
 
-
+#请在引入该对象的类中使用单例模式
 class WebStorageClient:
     def __init__(self, endpoint=None, token=""):
         self.token = token
@@ -86,11 +87,15 @@ class WebStorageClient:
         self.info_file_api      = FILE_INRO_API
         self.delete_file_api    = FILE_DELETE_API
         self.file_task_api      = FILE_TASK_API
+        #使用连接池来发送请求，否则的话可能由于tcp连接满时导致出现连接错误的现象
+        self._req = requests.Session()
+        self._req.mount('http://', HTTPAdapter(pool_connections=2, pool_maxsize=2))
 
     #进行post请求，传入的data为Python对象格式（字典或者列表），返回有两个值，其中json_object是返回值也是对象格式（字典或者列表），url为api接口的地址，不带域名和协议类型,例如'/api/file/list/'
     def _post(self, url, data_dict):
         headers = {'content-type': 'application/json','Authorization':'Token '+self.token}
-        res = requests.post(url, json.dumps(data_dict), headers=headers)
+        #res = requests.post(url, json.dumps(data_dict), headers=headers)
+        res = self._req.post(url, json.dumps(data_dict), headers=headers)
         json_object = json.loads(res.content.decode('utf-8'))
         return (json_object,res.status_code)
 
