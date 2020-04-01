@@ -6,7 +6,7 @@ import traceback
 class Command(BaseCommand):
     help = "\
         Create superuser with the following command ! \n\
-        createadminuser -u abc@example.com -p abc -a HeNan -c 13666666666  \n\
+        createadminuser -u admin@example.com -p example.com -a soft -c 123456789  \n\
             "
 
     def add_arguments(self, parser):
