@@ -28,6 +28,6 @@ pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 echo "Copy Nginx and Supervisor Config Fle !"
 cp /app/FileManager/docker/nginx/default /etc/nginx/sites-enabled/default
-cp /app/FileManager/docker/supervisor/eeas.conf /etc/supervisor/conf.d/eeas.conf
+cp /app/FileManager/docker/supervisor/filemanager.conf /etc/supervisor/conf.d/filemanager.conf
 
 echo "Install Finished !" 
