@@ -1,4 +1,4 @@
-cd /app/WebStorage/
+cd /app/FileManager/
 
 python3 manage.py makemigrations
 python3 manage.py migrate
