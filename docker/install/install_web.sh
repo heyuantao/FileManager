@@ -1,7 +1,6 @@
 echo "Remove the node_modules !"
-rm -Rf /app/EEAS/media/manager/node_modules
-rm -Rf /app/EEAS/media/examinee/node_modules
-rm -Rf /app/EEAS/media/guest/node_modules
+rm -Rf /app/FileManager/media/manager/node_modules
+rm -Rf /app/FileManager/media/guest/node_modules
 
 
 #echo "Set Apt Source List !"
@@ -28,7 +27,7 @@ echo "Install Python Package !"
 pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 echo "Copy Nginx and Supervisor Config Fle !"
-cp /app/EEAS/docker/nginx/default /etc/nginx/sites-enabled/default
-cp /app/EEAS/docker/supervisor/eeas.conf /etc/supervisor/conf.d/eeas.conf 
+cp /app/FileManager/docker/nginx/default /etc/nginx/sites-enabled/default
+cp /app/FileManager/docker/supervisor/eeas.conf /etc/supervisor/conf.d/eeas.conf
 
 echo "Install Finished !" 
