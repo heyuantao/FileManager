@@ -174,7 +174,12 @@ REST_FRAMEWORK = {
 }
 
 #WebStorageSettings
+#LARGE_STORAGE_SETTINGS={
+#    'SITE_URL' : 'http://webstorage.xxx.cn',
+#    'SITE_TOKEN': 'UseMyWebStorageService',
+#}
+
 LARGE_STORAGE_SETTINGS={
-    'SITE_URL' : 'http://webstorage.heyuantao.cn',
-    'SITE_TOKEN': 'UseMyWebStorageService',
+    'SITE_URL' :  os.getenv('STORAGE_ENDPOINT'),
+    'SITE_TOKEN': os.getenv('STORAGE_TOKEN'),
 }

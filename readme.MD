@@ -10,7 +10,7 @@ docker run -d -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=filemanager --
 ```
 ###1.3 Start the app docker
 ```
-docker run --name web  -d --netowrk=host web
+docker run --name web -d --network=host -e STORAGE_ENDPOINT=http://webstorage.heyuantao.cn -e STORAGE_TOKEN=UseMyWebStorageService web 
 ```
 ###1.4 Exec into web container and do init
 ```
