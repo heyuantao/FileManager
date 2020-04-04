@@ -4,4 +4,5 @@
     datadir         = /var/lib/mysql
     symbolic-links=0
     character-set-server = utf8
+    bind-address = 127.0.0.1
 

@@ -6,16 +6,19 @@ docker built -t filemanager:1.0 .
 ```
 ###1.2 Start the mysql docker
 ```
-sudo mkdir /app/
+sudo mkdir -p /app
 sudo chown -R ${USER}:${USER} /app/
 cd /app/
 git clone https://github.com/heyuantao/FileManager.git
 cd FileManager
-docker run -d --name=mysql --restart=always -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=filemanager --network=host  -v $PWD/docker/mysqld/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf mysql:5.6
+
+sudo mkdir -p /app/data/db
+docker run -d --name=mysql --restart=always --network=host -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=filemanager -v /app/data/db:/var/lib/mysql -v $PWD/docker/mysqld/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf mysql:5.6
 ```
 ###1.3 Start the app docker
 ```
-docker run --name filemanager -d --network=host -e STORAGE_ENDPOINT=http://webstorage.heyuantao.cn -e STORAGE_TOKEN=UseMyWebStorageService filemanager:1.0
+sudo mkdir -p /app/data/logs
+docker run -d --name=filemanager --restart=always --network=host -e STORAGE_ENDPOINT=http://webstorage.heyuantao.cn -e STORAGE_TOKEN=UseMyWebStorageService -v /app/data/logs/:/var/log/supervisor/ filemanager:1.0
 ```
 ###1.4 Exec into web container and do init
 ```
