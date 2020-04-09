@@ -4,6 +4,7 @@ FROM ubuntu:18.04
 ###This part is use to set time zone ########
 ENV TZ=Asia/Shanghai
 RUN sed -i s/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
+RUN sed -i s/security.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 RUN echo $TZ > /etc/timezone && apt-get update && apt-get install -y tzdata && \
     rm /etc/localtime && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
