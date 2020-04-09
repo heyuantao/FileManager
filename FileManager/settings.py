@@ -110,6 +110,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#handle session expire, SESSION_COOKIE_AGE and  SESSION_EXPIRE_AT_BROWSER_CLOSE could not use same time
+#SESSION_SAVE_EVERY_REQUEST=True
+SESSION_COOKIE_AGE=60*60*1  #1 hours
+#SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
