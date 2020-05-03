@@ -7,12 +7,12 @@ help: ##how to use
 
 savedata: ##save data base and uploads file
 	@echo "Save data to /tmp/filemanager_db.sql in debug container !"
-	@mysqldump -h 127.0.0.1 -u root -p filemanager>/tmp/filemanager_db.sql
+	@mysqldump -h 127.0.0.1 -u root  filemanager>/tmp/filemanager_db.sql
 
 
 loaddata:  ##load data to database
 	@echo "Load data from /tmp/filemanager_db.sql in debug container !"
-	@mysql -h 127.0.0.1 -u root -p filemanager < /tmp/filemanager_db.sql
+	@mysql -h 127.0.0.1 -u root  filemanager < /tmp/filemanager_db.sql
 
 
 uploaddata: ## upload to s3 storage
