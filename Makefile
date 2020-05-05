@@ -39,5 +39,5 @@ buildnodemodules:
 
 clearnodemodules:
 	@echo "build the node modules"
-	@rm -Rf ./media/guest/modules
-	@rm -Rf ./media/manager/modules
+	@rm -Rf ./media/guest/node_modules
+	@rm -Rf ./media/manager/node_modules
