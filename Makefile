@@ -1,4 +1,4 @@
-.PHONY: savedata loaddata uploaddata downloaddata help
+.PHONY: savedata loaddata uploaddata downloaddata installnodemodules buildnodemodules clearnodemodules help
 
 
 help: ##how to use
@@ -24,7 +24,20 @@ downloaddata: ## download file from s3
 	@echo "Download files to s3 ! Please set the ~/.s3cfg file first and install s3cmd !"
 	@s3cmd get s3://uploads/filemanager_db.sql	/tmp/
 
+
 installnodemodules:
 	@echo "install the node modules"
 	@cd ./media/guest/ && yarn install
 	@cd ./media/manager/ && yarn install
+
+
+buildnodemodules:
+	@echo "build the node modules"
+	@cd ./media/guest/ && yarn run build
+	@cd ./media/manager/ && yarn run build
+
+
+clearnodemodules:
+	@echo "build the node modules"
+	@rm -Rf ./media/guest/modules
+	@rm -Rf ./media/manager/modules
