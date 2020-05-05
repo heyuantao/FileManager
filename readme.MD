@@ -1,6 +1,16 @@
 ##1.Run the app in docker
 
 ###1.1 First build the docker image
+
+compile js file
+```
+git clone https://github.com/heyuantao/FileManager.git
+cd FileManager
+make installnodemodules
+make buildnodemodules
+make clearnodemodules
+```
+build image
 ```
 docker built -t filemanager:1.0 .
 ```
