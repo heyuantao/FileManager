@@ -24,3 +24,7 @@ downloaddata: ## download file from s3
 	@echo "Download files to s3 ! Please set the ~/.s3cfg file first and install s3cmd !"
 	@s3cmd get s3://uploads/filemanager_db.sql	/tmp/
 
+installnodemodules:
+	@echo "install the node modules"
+	@cd ./media/guest/ && yarn install
+	@cd ./media/manager/ && yarn install
