@@ -23,7 +23,7 @@ ENV LC_ALL zh_CN.UTF-8
 
 
 FROM base AS finally
-RUN apt-get update && apt-get install -y nginx supervisor python3 python3-pip python3-dev libmysqlclient-dev libssl-dev  && apt-get clean
+RUN apt-get update && apt-get install -y nginx supervisor python3 python3-pip virtualenv python3-dev libmysqlclient-dev libssl-dev  && apt-get clean
 
 WORKDIR /app/FileManager
 COPY ./ /app/FileManager/
