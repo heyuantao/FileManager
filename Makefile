@@ -1,10 +1,10 @@
-.PHONY: savedata loaddata uploaddata downloaddata installnodemodules buildnodemodules clearnodemodules help
+.PHONY: savedata loaddata uploaddata downloaddata installenv installnodeenv buildnodemodules cleannodemodules help
 
 PATH  := $(PWD)/../venv/bin:$(PWD)/../nodeenv/bin:$(PATH)
 SHELL := env PATH=$(PATH) /bin/bash
 
 help: ##how to use
-	@echo "savedata loaddata uploaddata downloaddata help"
+	@echo "savedata loaddata uploaddata downloaddata installenv installnodeenv buildnodemodules cleannodemodules help"
 
 
 savedata: ##save data base and uploads file
@@ -48,7 +48,7 @@ buildnodemodules:
 	@cd ./media/manager/ && yarn run build
 
 
-clearnodemodules:
-	@echo "build the node modules"
+cleannodemodules:
+	@echo "clean the node modules"
 	@rm -Rf ./media/guest/node_modules
 	@rm -Rf ./media/manager/node_modules
