@@ -2,17 +2,11 @@
 
 ###1.1 First build the docker image
 
-compile js file
+build image
 ```
 git clone https://github.com/heyuantao/FileManager.git
 cd FileManager
-make installnodemodules
-make buildnodemodules
-make clearnodemodules
-```
-build image
-```
-docker built -t filemanager:1.0 .
+docker built -t filemanager:3.0 .
 ```
 ###1.2 Start the mysql docker
 ```
@@ -28,7 +22,7 @@ docker run -d --name=mysql --restart=always --network=host -e MYSQL_ALLOW_EMPTY_
 ###1.3 Start the app docker
 ```
 sudo mkdir -p /app/data/logs
-docker run -d --name=filemanager --restart=always --network=host -e STORAGE_ENDPOINT=http://webstorage.heyuantao.cn -e STORAGE_TOKEN=UseMyWebStorageService -v /app/data/logs/:/var/log/supervisor/ filemanager:1.0
+docker run -d --name=filemanager --restart=always --network=host -e STORAGE_ENDPOINT=http://webstorage.heyuantao.cn -e STORAGE_TOKEN=UseMyWebStorageService -v /app/data/logs/:/var/log/supervisor/ filemanager:3.0
 ```
 ###1.4 Exec into web container and do init
 ```
