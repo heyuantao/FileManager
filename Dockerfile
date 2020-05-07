@@ -21,10 +21,13 @@ ENV LANG zh_CN.UTF-8
 ENV LANGUAGE zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 
+RUN apt-get update && apt-get install -y nginx supervisor python3 python3-pip virtualenv python3-dev libmysqlclient-dev libssl-dev && apt-get clean
+
+
+
 
 FROM base AS finally
-RUN apt-get update && apt-get install -y nginx supervisor python3 python3-pip virtualenv python3-dev libmysqlclient-dev libssl-dev  && apt-get clean
-
+#RUN apt-get update && apt-get install -y nginx supervisor python3 python3-pip virtualenv python3-dev libmysqlclient-dev libssl-dev  && apt-get clean
 WORKDIR /app/FileManager
 COPY ./ /app/FileManager/
 RUN bash /app/FileManager/docker/install/install_web.sh
