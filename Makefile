@@ -1,5 +1,7 @@
 .PHONY: savedata loaddata uploaddata downloaddata installnodemodules buildnodemodules clearnodemodules help
 
+PATH  := $(PWD)/../venv/bin:$(PWD)/../nodeenv/bin:$(PATH)
+SHELL := env PATH=$(PATH) /bin/bash
 
 help: ##how to use
 	@echo "savedata loaddata uploaddata downloaddata help"
@@ -25,10 +27,19 @@ downloaddata: ## download file from s3
 	@s3cmd get s3://uploads/filemanager_db.sql	/tmp/
 
 
-installnodemodules:
-	@echo "install the node modules"
-	@cd ./media/guest/ && yarn install
-	@cd ./media/manager/ && yarn install
+installenv:
+	@echo "Install Python3.6 env !"
+	@virtualenv -p /usr/bin/python3.6 ../venv
+	@pip install -r requirements.txt -i https://pypi.douban.com/simple
+	@pip install nodeenv -i https://pypi.douban.com/simple
+
+
+installnodeenv:
+	@echo "Install NodeEnv and nodemodules!"
+	@nodeenv ../nodeenv --node=10.15.3 --prebuilt --mirror=npm.taobao.org
+	@npm install -g yarn --registry https://registry.npm.taobao.org
+	@cd ./media/guest/    && yarn install --registry  https://registry.npm.taobao.org
+	@cd ./media/manager/  && yarn install --registry  https://registry.npm.taobao.org
 
 
 buildnodemodules:

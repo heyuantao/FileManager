@@ -1,5 +1,5 @@
 #FROM harbor.syslab.org/library/ubuntu:18.04
-FROM ubuntu:18.04
+FROM ubuntu:18.04 AS base
 
 ###This part is use to set time zone ########
 ENV TZ=Asia/Shanghai
@@ -21,10 +21,12 @@ ENV LANG zh_CN.UTF-8
 ENV LANGUAGE zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 
+
+FROM base AS finally
+RUN apt-get update && apt-get install -y nginx supervisor python3 python3-pip python3-dev libmysqlclient-dev libssl-dev  && apt-get clean
+
 WORKDIR /app/FileManager
-
 COPY ./ /app/FileManager/
-
 RUN bash /app/FileManager/docker/install/install_web.sh
 
 #VOLUME ['/app/EEAS/media/avatar/','/var/log/supervisor/']
